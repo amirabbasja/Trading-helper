@@ -1,6 +1,4 @@
-﻿//using Binance.Net;
-//using Binance.Net.Objects.Spot;
-using CryptoExchange.Net.Authentication;
+﻿using CryptoExchange.Net.Authentication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +20,8 @@ using Trading_Helper.Properties;
 using System.Collections.Specialized;
 using System.IO;
 using System.Configuration;
+using Binance.Net.Clients;
+using Kucoin.Net.Clients;
 
 namespace Trading_Helper
 {
@@ -270,9 +270,9 @@ namespace Trading_Helper
             if (exchange == "kucoin")
             {
                 //Get Spot balance
-                var callResultSpot = await client.Spot.GetAccountsAsync();
+                var callResultSpot = await client.SpotApi.Account.GetAccountsAsync();
                 //Get futures balance
-                var callResultFutures = await client.Futures.GetAccountOverviewAsync("USDT");
+                var callResultFutures = await client.FuturesApi.Account.GetAccountOverviewAsync("USDT");
 
                 if (!callResultSpot.Success)
                 {
@@ -295,11 +295,11 @@ namespace Trading_Helper
                             //kucoin has two Margin accounts so to avoid errors, we first check if there are duplicate keys in dictionary
                             if (balancesDict.ContainsKey(accData.Type.ToString()))
                             {
-                                balancesDict[accData.Type.ToString()] += float.Parse(accData.Balance.ToString());
+                                balancesDict[accData.Type.ToString()] += float.Parse(accData.Holds.ToString());
                             }
                             else
                             {
-                                balancesDict.Add(accData.Type.ToString(), float.Parse(accData.Balance.ToString()));
+                                balancesDict.Add(accData.Type.ToString(), float.Parse(accData.Holds.ToString()));
                             }
                         }
 
@@ -416,17 +416,17 @@ namespace Trading_Helper
                 //Make Kucoin client
                 restClientKucoin = new KucoinClient(new KucoinClientOptions()
                 {
-                    // Specify options for the client
-                    ApiCredentials = new KucoinApiCredentials(apiKey, secretKey, "0"),
-                    FuturesApiCredentials = new KucoinApiCredentials("0", "0", "0")
+                    //// Specify options for the client
+                    //ApiCredentials = new KucoinApiCredentials(apiKey, secretKey, "0"),
+                    //FuturesApiCredentials = new KucoinApiCredentials("0", "0", "0")
 
                 });
             }
             else if (radioPlatformBinance.Checked == true)
             {
-                //Make Binance client
-                restClientBinance = new BinanceClient();
-                restClientBinance.SetApiCredentials(apiKey, secretKey);
+                ////Make Binance client
+                //restClientBinance = new BinanceClient();
+                //restClientBinance.SetApiCredentials(apiKey, secretKey);
             }
         }
         #endregion
