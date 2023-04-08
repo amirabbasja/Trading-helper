@@ -26,9 +26,9 @@ namespace Trading_Helper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public float accountSize {
+        public string accountSize {
             get {
-                return ((float)(this["accountSize"]));
+                return ((string)(this["accountSize"]));
             }
             set {
                 this["accountSize"] = value;
@@ -38,9 +38,9 @@ namespace Trading_Helper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public float leverage {
+        public string leverage {
             get {
-                return ((float)(this["leverage"]));
+                return ((string)(this["leverage"]));
             }
             set {
                 this["leverage"] = value;
@@ -50,9 +50,9 @@ namespace Trading_Helper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public float risk {
+        public string risk {
             get {
-                return ((float)(this["risk"]));
+                return ((string)(this["risk"]));
             }
             set {
                 this["risk"] = value;
@@ -62,9 +62,9 @@ namespace Trading_Helper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public float SL {
+        public string SL {
             get {
-                return ((float)(this["SL"]));
+                return ((string)(this["SL"]));
             }
             set {
                 this["SL"] = value;
@@ -73,25 +73,12 @@ namespace Trading_Helper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string API_Key {
+        public global::System.Collections.Specialized.StringCollection client {
             get {
-                return ((string)(this["API_Key"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["client"]));
             }
             set {
-                this["API_Key"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string API_Secret {
-            get {
-                return ((string)(this["API_Secret"]));
-            }
-            set {
-                this["API_Secret"] = value;
+                this["client"] = value;
             }
         }
     }

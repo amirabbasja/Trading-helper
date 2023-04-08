@@ -2,22 +2,19 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Trading_Helper.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="accountSize" Type="System.Single" Scope="User">
+    <Setting Name="accountSize" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="leverage" Type="System.Single" Scope="User">
+    <Setting Name="leverage" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="risk" Type="System.Single" Scope="User">
+    <Setting Name="risk" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="SL" Type="System.Single" Scope="User">
+    <Setting Name="SL" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="API_Key" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="API_Secret" Type="System.String" Scope="User">
+    <Setting Name="client" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

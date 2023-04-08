@@ -1,7 +1,7 @@
 ﻿
 namespace Trading_Helper
 {
-    partial class Form1
+    partial class Landing
     {
         /// <summary>
         /// Required designer variable.
@@ -29,9 +29,9 @@ namespace Trading_Helper
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Landing));
             this.MainStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.VpnConnectionToolStrip = new System.Windows.Forms.ToolStripStatusLabel();
+            this.applicationStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.AccountGroupeBox = new System.Windows.Forms.GroupBox();
             this.btnUpdateAccountInfo = new System.Windows.Forms.Button();
             this.chkAccountGroupeBoxENableEditing = new System.Windows.Forms.CheckBox();
@@ -58,20 +58,20 @@ namespace Trading_Helper
             this.radioPlatformKucoin = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.lblPositionSizeTotal = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblSIze = new System.Windows.Forms.Label();
             this.lblPositionLoss = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblLoss = new System.Windows.Forms.Label();
             this.btnGetAccSize = new System.Windows.Forms.Button();
             this.btnCalculatePositionSize = new System.Windows.Forms.Button();
             this.txtStopLoss = new System.Windows.Forms.TextBox();
             this.txtRiskPerTrade = new System.Windows.Forms.TextBox();
             this.txtLeverage = new System.Windows.Forms.TextBox();
             this.txtAccSize = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblSL = new System.Windows.Forms.Label();
+            this.lblRisk = new System.Windows.Forms.Label();
+            this.lblLev = new System.Windows.Forms.Label();
+            this.lblaccSize = new System.Windows.Forms.Label();
+            this.lblUnleveraged = new System.Windows.Forms.Label();
             this.lblPositionSize = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -98,18 +98,18 @@ namespace Trading_Helper
             // 
             this.MainStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.MainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.VpnConnectionToolStrip});
+            this.applicationStatus});
             this.MainStatusStrip.Location = new System.Drawing.Point(0, 630);
             this.MainStatusStrip.Name = "MainStatusStrip";
             this.MainStatusStrip.Size = new System.Drawing.Size(1101, 26);
             this.MainStatusStrip.TabIndex = 1;
             this.MainStatusStrip.Text = "statusStrip1";
             // 
-            // VpnConnectionToolStrip
+            // applicationStatus
             // 
-            this.VpnConnectionToolStrip.Name = "VpnConnectionToolStrip";
-            this.VpnConnectionToolStrip.Size = new System.Drawing.Size(115, 20);
-            this.VpnConnectionToolStrip.Text = "App not Started";
+            this.applicationStatus.Name = "applicationStatus";
+            this.applicationStatus.Size = new System.Drawing.Size(154, 20);
+            this.applicationStatus.Text = "Waiting for command";
             // 
             // AccountGroupeBox
             // 
@@ -355,20 +355,20 @@ namespace Trading_Helper
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.lblPositionSizeTotal);
-            this.groupBox5.Controls.Add(this.label10);
+            this.groupBox5.Controls.Add(this.lblSIze);
             this.groupBox5.Controls.Add(this.lblPositionLoss);
-            this.groupBox5.Controls.Add(this.label9);
+            this.groupBox5.Controls.Add(this.lblLoss);
             this.groupBox5.Controls.Add(this.btnGetAccSize);
             this.groupBox5.Controls.Add(this.btnCalculatePositionSize);
             this.groupBox5.Controls.Add(this.txtStopLoss);
             this.groupBox5.Controls.Add(this.txtRiskPerTrade);
             this.groupBox5.Controls.Add(this.txtLeverage);
             this.groupBox5.Controls.Add(this.txtAccSize);
-            this.groupBox5.Controls.Add(this.label8);
-            this.groupBox5.Controls.Add(this.label7);
-            this.groupBox5.Controls.Add(this.label6);
-            this.groupBox5.Controls.Add(this.label5);
-            this.groupBox5.Controls.Add(this.label4);
+            this.groupBox5.Controls.Add(this.lblSL);
+            this.groupBox5.Controls.Add(this.lblRisk);
+            this.groupBox5.Controls.Add(this.lblLev);
+            this.groupBox5.Controls.Add(this.lblaccSize);
+            this.groupBox5.Controls.Add(this.lblUnleveraged);
             this.groupBox5.Controls.Add(this.lblPositionSize);
             this.groupBox5.Location = new System.Drawing.Point(837, 295);
             this.groupBox5.Name = "groupBox5";
@@ -386,14 +386,14 @@ namespace Trading_Helper
             this.lblPositionSizeTotal.TabIndex = 21;
             this.lblPositionSizeTotal.Text = "--";
             // 
-            // label10
+            // lblSIze
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 208);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(124, 16);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "Total Position Size: ";
+            this.lblSIze.AutoSize = true;
+            this.lblSIze.Location = new System.Drawing.Point(7, 208);
+            this.lblSIze.Name = "lblSIze";
+            this.lblSIze.Size = new System.Drawing.Size(124, 16);
+            this.lblSIze.TabIndex = 20;
+            this.lblSIze.Text = "Total Position Size: ";
             // 
             // lblPositionLoss
             // 
@@ -404,14 +404,14 @@ namespace Trading_Helper
             this.lblPositionLoss.TabIndex = 19;
             this.lblPositionLoss.Text = "--";
             // 
-            // label9
+            // lblLoss
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(9, 233);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(39, 16);
-            this.label9.TabIndex = 18;
-            this.label9.Text = "Loss:";
+            this.lblLoss.AutoSize = true;
+            this.lblLoss.Location = new System.Drawing.Point(9, 233);
+            this.lblLoss.Name = "lblLoss";
+            this.lblLoss.Size = new System.Drawing.Size(39, 16);
+            this.lblLoss.TabIndex = 18;
+            this.lblLoss.Text = "Loss:";
             // 
             // btnGetAccSize
             // 
@@ -447,7 +447,6 @@ namespace Trading_Helper
             this.txtRiskPerTrade.Name = "txtRiskPerTrade";
             this.txtRiskPerTrade.Size = new System.Drawing.Size(100, 22);
             this.txtRiskPerTrade.TabIndex = 14;
-            this.txtRiskPerTrade.Text = "1";
             // 
             // txtLeverage
             // 
@@ -455,7 +454,6 @@ namespace Trading_Helper
             this.txtLeverage.Name = "txtLeverage";
             this.txtLeverage.Size = new System.Drawing.Size(124, 22);
             this.txtLeverage.TabIndex = 13;
-            this.txtLeverage.Text = "8";
             // 
             // txtAccSize
             // 
@@ -463,53 +461,51 @@ namespace Trading_Helper
             this.txtAccSize.Name = "txtAccSize";
             this.txtAccSize.Size = new System.Drawing.Size(124, 22);
             this.txtAccSize.TabIndex = 12;
-            this.txtAccSize.Text = "200";
             // 
-            // label8
+            // lblSL
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(7, 139);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(81, 16);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "Stop loss %:";
+            this.lblSL.AutoSize = true;
+            this.lblSL.Location = new System.Drawing.Point(7, 139);
+            this.lblSL.Name = "lblSL";
+            this.lblSL.Size = new System.Drawing.Size(81, 16);
+            this.lblSL.TabIndex = 11;
+            this.lblSL.Text = "Stop loss %:";
             // 
-            // label7
+            // lblRisk
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 103);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(109, 16);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Risk % per trade:";
+            this.lblRisk.AutoSize = true;
+            this.lblRisk.Location = new System.Drawing.Point(7, 103);
+            this.lblRisk.Name = "lblRisk";
+            this.lblRisk.Size = new System.Drawing.Size(109, 16);
+            this.lblRisk.TabIndex = 10;
+            this.lblRisk.Text = "Risk % per trade:";
             // 
-            // label6
+            // lblLev
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 70);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(68, 16);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Leverage:";
+            this.lblLev.AutoSize = true;
+            this.lblLev.Location = new System.Drawing.Point(6, 70);
+            this.lblLev.Name = "lblLev";
+            this.lblLev.Size = new System.Drawing.Size(68, 16);
+            this.lblLev.TabIndex = 3;
+            this.lblLev.Text = "Leverage:";
             // 
-            // label5
+            // lblaccSize
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 35);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(90, 16);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Account Size: ";
+            this.lblaccSize.AutoSize = true;
+            this.lblaccSize.Location = new System.Drawing.Point(6, 35);
+            this.lblaccSize.Name = "lblaccSize";
+            this.lblaccSize.Size = new System.Drawing.Size(90, 16);
+            this.lblaccSize.TabIndex = 2;
+            this.lblaccSize.Text = "Account Size: ";
             // 
-            // label4
+            // lblUnleveraged
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 181);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(172, 16);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Unleveraged Position Size: ";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            this.lblUnleveraged.AutoSize = true;
+            this.lblUnleveraged.Location = new System.Drawing.Point(7, 181);
+            this.lblUnleveraged.Name = "lblUnleveraged";
+            this.lblUnleveraged.Size = new System.Drawing.Size(172, 16);
+            this.lblUnleveraged.TabIndex = 1;
+            this.lblUnleveraged.Text = "Unleveraged Position Size: ";
             // 
             // lblPositionSize
             // 
@@ -601,7 +597,7 @@ namespace Trading_Helper
             this.volume.Name = "volume";
             this.volume.Width = 125;
             // 
-            // Form1
+            // Landing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -616,8 +612,9 @@ namespace Trading_Helper
             this.Controls.Add(this.AccountGroupeBox);
             this.Controls.Add(this.MainStatusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "Landing";
             this.Text = "Trading helper";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MainStatusStrip.ResumeLayout(false);
             this.MainStatusStrip.PerformLayout();
@@ -643,7 +640,7 @@ namespace Trading_Helper
 
         #endregion
         private System.Windows.Forms.StatusStrip MainStatusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel VpnConnectionToolStrip;
+        private System.Windows.Forms.ToolStripStatusLabel applicationStatus;
         private System.Windows.Forms.GroupBox AccountGroupeBox;
         private System.Windows.Forms.Button btnUpdateAccountInfo;
         private System.Windows.Forms.CheckBox chkAccountGroupeBoxENableEditing;
@@ -674,18 +671,18 @@ namespace Trading_Helper
         private System.Windows.Forms.TextBox txtRiskPerTrade;
         private System.Windows.Forms.TextBox txtLeverage;
         private System.Windows.Forms.TextBox txtAccSize;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSL;
+        private System.Windows.Forms.Label lblRisk;
+        private System.Windows.Forms.Label lblLev;
+        private System.Windows.Forms.Label lblaccSize;
+        private System.Windows.Forms.Label lblUnleveraged;
         private System.Windows.Forms.Label lblPositionSize;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnGetAccSize;
         private System.Windows.Forms.Label lblPositionLoss;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblLoss;
         private System.Windows.Forms.Label lblPositionSizeTotal;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblSIze;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.DataGridView dtgTopMovers;
         private System.Windows.Forms.DataGridViewTextBoxColumn symbol;

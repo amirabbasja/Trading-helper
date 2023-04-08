@@ -19,12 +19,15 @@ using Kucoin.Net;
 using Kucoin.Net.Objects;
 using Binance.Net;
 using Trading_Helper.Properties;
+using System.Collections.Specialized;
+using System.IO;
+using System.Configuration;
 
 namespace Trading_Helper
 {
-    public partial class Form1 : Form
+    public partial class Landing : Form
     {
-        public Form1()
+        public Landing()
         {
             InitializeComponent();
         }
@@ -38,8 +41,7 @@ namespace Trading_Helper
             public float leverage;
             public float risk;
             public float SL;
-            public string API_Key;
-            public string API_Secret;
+            public string client;
         }
 
         public string apiKey;
@@ -48,53 +50,6 @@ namespace Trading_Helper
         public KucoinClient restClientKucoin;
         public BinanceClient restClientBinance;
         public bool _UPDATE_APP = false; //The main loop will continue working if this is true
-
-        private void saveUserProperties(userProperties props)
-        {
-            // This method saves the users properties in the default settings of the application.
-            // So in the next run, the program starts up with the previouse settings.
-
-            // Args:
-            //  props: userProperties(Struct): The structure containing user's settings
-            
-            // Returns:
-            //  None
-
-            Settings.Default["accountSize"] = props.accountSize;
-            Settings.Default["leverage"] = props.leverage;
-            Settings.Default["risk"] = props.risk;
-            Settings.Default["SL"] = props.SL;
-            Settings.Default["API_Key"] = props.API_Key;
-            Settings.Default["API_Secret"] = props.API_Secret;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            //Assing textBox valeus to the variables
-            apiKey = txtAPIKEY.Text;
-            secretKey = txtSECRETKEY.Text;
-
-            //Check for VPN connection
-            CheckForVPNConnection();
-
-            if (radioPlatformKucoin.Checked == true)
-            {
-                //Make Kucoin client
-                restClientKucoin = new KucoinClient(new KucoinClientOptions()
-                {
-                    // Specify options for the client
-                    ApiCredentials = new KucoinApiCredentials(apiKey, secretKey, "0"),
-                    FuturesApiCredentials = new KucoinApiCredentials("0", "0", "0")
-
-                });
-            }
-            else if (radioPlatformBinance.Checked == true)
-            {
-                //Make Binance client
-                restClientBinance = new BinanceClient();
-                restClientBinance.SetApiCredentials(apiKey, secretKey);
-            }
-        }
         #endregion
 
         #region Account GroupBox
@@ -137,6 +92,46 @@ namespace Trading_Helper
 
         #region Used methods
 
+        #region Save user's settings
+        private void saveUserProperties()
+        {
+            // This method saves the users properties in the default settings of the application.
+            // So in the next run, the program starts up with the previouse settings.
+            // Returns:
+            //  None
+
+            // Redundant 
+            TextBox[] txtArray = { txtAccSize, txtLeverage, txtRiskPerTrade, txtStopLoss };
+
+            Settings.Default["accountSize"] = txtAccSize.Text;
+            Settings.Default["leverage"] = txtLeverage.Text;
+            Settings.Default["risk"] = txtRiskPerTrade.Text;
+            Settings.Default["SL"] = txtStopLoss.Text;
+            Settings.Default["client"] = new StringCollection();
+
+            // Save the settings
+            Settings.Default.Save();
+        }
+        #endregion
+
+        #region Assign user's settings
+        private void assignUserProperties()
+        {
+            // This method updates the user's properties in the application.
+            // Returns:
+            //  None
+
+            // Redundant 
+            TextBox[] txtArray = { txtAccSize, txtLeverage, txtRiskPerTrade, txtStopLoss };
+
+            txtAccSize.Text = Settings.Default["accountSize"].ToString();
+            txtLeverage.Text = Settings.Default["leverage"].ToString();
+            txtRiskPerTrade.Text = Settings.Default["risk"].ToString();
+            txtStopLoss.Text = Settings.Default["SL"].ToString();
+            //Settings.Default["client"] = new StringCollection();
+        }
+        #endregion
+
         #region Get Ip address
         public string GetLocalIPAddress()
         {
@@ -149,6 +144,29 @@ namespace Trading_Helper
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+        #endregion
+
+        #region Update status strip
+        public void updateAppStatus(string msg, Color? c = null)
+        {
+            // This method updates the status strip
+            // Args:
+            //  msg: string: The message to be displayed in the status strip
+            // Returns:
+            //  None
+
+            if (c == null) { c = Color.Black;}
+
+            if (msg == null)
+            {
+                applicationStatus.Text = "Waiting for command";
+                applicationStatus.ForeColor = (Color) c;
+            }else
+            {
+                applicationStatus.Text = msg;
+                applicationStatus.ForeColor = (Color)c;
+            }
         }
         #endregion
 
@@ -167,18 +185,15 @@ namespace Trading_Helper
                     if (Interface.Description.Contains("TAP-Windows Adapter")
                       && Interface.OperationalStatus == OperationalStatus.Up)
                     {
-                        //VPN Connected, return tru and update Statusstrip
-                        VpnConnectionToolStrip.Text = "VPN Connected";
-                        VpnConnectionToolStrip.ForeColor = Color.Green;
+                        // VPN Connected, return tru and update Statusstrip
+                        updateAppStatus("VPN Connected", Color.Green);
                         return true;
                     }
                 }
             }
 
-            //VPN Not Connected, return tru and update Statusstrip
-            //VpnConnectionToolStrip.Text = "VPN Not Connected";
-            //VpnConnectionToolStrip.ForeColor = Color.Red;
-            //MessageBox.Show("VPN Not Conneted!");
+            // VPN Not Connected, return tru and update Statusstrip
+            updateAppStatus("VPN Not Connected", Color.Red);
             return false;
         }
         #endregion
@@ -336,6 +351,8 @@ namespace Trading_Helper
 
         #endregion
 
+        #region Events
+
         public async void BtnStart_Click(object sender, EventArgs e)
         {
             btnStart.Enabled = false; //Disable start botton so we wont have multiple threads running simultaniously
@@ -369,15 +386,49 @@ namespace Trading_Helper
             }
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
         private void btnDtgTopMoversStart_Click(object sender, EventArgs e)
         {
-
+            // Start the screener
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Update the user settings before closing the application
+            updateAppStatus("Closing");
+            saveUserProperties();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            MessageBox.Show(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
+            // Assing textBox valeus to the variables
+            apiKey = "0"; //txtAPIKEY.Text;
+            secretKey = "0"; // txtSECRETKEY.Text;
+
+            // Check for VPN connection
+            CheckForVPNConnection();
+
+            // Update the fields for UX improvements
+            assignUserProperties();
+
+            if (radioPlatformKucoin.Checked == true)
+            {
+                //Make Kucoin client
+                restClientKucoin = new KucoinClient(new KucoinClientOptions()
+                {
+                    // Specify options for the client
+                    ApiCredentials = new KucoinApiCredentials(apiKey, secretKey, "0"),
+                    FuturesApiCredentials = new KucoinApiCredentials("0", "0", "0")
+
+                });
+            }
+            else if (radioPlatformBinance.Checked == true)
+            {
+                //Make Binance client
+                restClientBinance = new BinanceClient();
+                restClientBinance.SetApiCredentials(apiKey, secretKey);
+            }
+        }
+        #endregion
     }
 }
