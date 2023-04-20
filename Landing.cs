@@ -27,6 +27,9 @@ namespace Trading_Helper
 {
     public partial class Landing : Form
     {
+        // Using the metghods class in the highest scope possible
+        methods methodsClass_ = new methods();
+
         public Landing()
         {
             InitializeComponent();
@@ -90,47 +93,7 @@ namespace Trading_Helper
         }
         #endregion
 
-        #region Used methods
-
-        #region Save user's settings
-        private void saveUserProperties()
-        {
-            // This method saves the users properties in the default settings of the application.
-            // So in the next run, the program starts up with the previouse settings.
-            // Returns:
-            //  None
-
-            // Redundant 
-            TextBox[] txtArray = { txtAccSize, txtLeverage, txtRiskPerTrade, txtStopLoss };
-
-            Settings.Default["accountSize"] = txtAccSize.Text;
-            Settings.Default["leverage"] = txtLeverage.Text;
-            Settings.Default["risk"] = txtRiskPerTrade.Text;
-            Settings.Default["SL"] = txtStopLoss.Text;
-            Settings.Default["client"] = new StringCollection();
-
-            // Save the settings
-            Settings.Default.Save();
-        }
-        #endregion
-
-        #region Assign user's settings
-        private void assignUserProperties()
-        {
-            // This method updates the user's properties in the application.
-            // Returns:
-            //  None
-
-            // Redundant 
-            TextBox[] txtArray = { txtAccSize, txtLeverage, txtRiskPerTrade, txtStopLoss };
-
-            txtAccSize.Text = Settings.Default["accountSize"].ToString();
-            txtLeverage.Text = Settings.Default["leverage"].ToString();
-            txtRiskPerTrade.Text = Settings.Default["risk"].ToString();
-            txtStopLoss.Text = Settings.Default["SL"].ToString();
-            //Settings.Default["client"] = new StringCollection();
-        }
-        #endregion
+        #region Methods
 
         #region Get Ip address
         public string GetLocalIPAddress()
@@ -144,29 +107,6 @@ namespace Trading_Helper
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
-        }
-        #endregion
-
-        #region Update status strip
-        public void updateAppStatus(string msg, Color? c = null)
-        {
-            // This method updates the status strip
-            // Args:
-            //  msg: string: The message to be displayed in the status strip
-            // Returns:
-            //  None
-
-            if (c == null) { c = Color.Black;}
-
-            if (msg == null)
-            {
-                applicationStatus.Text = "Waiting for command";
-                applicationStatus.ForeColor = (Color) c;
-            }else
-            {
-                applicationStatus.Text = msg;
-                applicationStatus.ForeColor = (Color)c;
-            }
         }
         #endregion
 
@@ -186,14 +126,14 @@ namespace Trading_Helper
                       && Interface.OperationalStatus == OperationalStatus.Up)
                     {
                         // VPN Connected, return tru and update Statusstrip
-                        updateAppStatus("VPN Connected", Color.Green);
+                        methodsClass_.updateAppStatus("VPN Connected", applicationStatus, Color.Green);
                         return true;
                     }
                 }
             }
 
             // VPN Not Connected, return tru and update Statusstrip
-            updateAppStatus("VPN Not Connected", Color.Red);
+            methodsClass_.updateAppStatus("VPN Not Connected", applicationStatus, Color.Red);
             return false;
         }
         #endregion
@@ -394,13 +334,20 @@ namespace Trading_Helper
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Update the user settings before closing the application
-            updateAppStatus("Closing");
-            saveUserProperties();
+            methodsClass_.updateAppStatus("Closing", applicationStatus);
+
+            var properties = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("SL", txtStopLoss.Text),
+                new KeyValuePair<string, string>("risk", txtRiskPerTrade.Text),
+                new KeyValuePair<string, string>("leverage", txtLeverage.Text),
+                new KeyValuePair<string, string>("accountSize", txtAccSize.Text),
+                };
+
+            methodsClass_.saveUserProperties(properties);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MessageBox.Show(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
             // Assing textBox valeus to the variables
             apiKey = "0"; //txtAPIKEY.Text;
             secretKey = "0"; // txtSECRETKEY.Text;
@@ -409,7 +356,14 @@ namespace Trading_Helper
             CheckForVPNConnection();
 
             // Update the fields for UX improvements
-            assignUserProperties();
+            var properties = new List<KeyValuePair<TextBox, string>>() {
+                new KeyValuePair<TextBox, string>(txtStopLoss, Settings.Default["SL"].ToString()),
+                new KeyValuePair<TextBox, string>(txtRiskPerTrade, Settings.Default["risk"].ToString()),
+                new KeyValuePair<TextBox, string>(txtLeverage, Settings.Default["leverage"].ToString()),
+                new KeyValuePair<TextBox, string>(txtAccSize, Settings.Default["accountSize"].ToString()),
+                };
+
+            methodsClass_.assignUserProperties(properties);
 
             if (radioPlatformKucoin.Checked == true)
             {
@@ -429,6 +383,13 @@ namespace Trading_Helper
                 //restClientBinance.SetApiCredentials(apiKey, secretKey);
             }
         }
+
+        private void btnTrades_Click(object sender, EventArgs e)
+        {
+            TradeManagement frmTradeManagement = new TradeManagement();
+            frmTradeManagement.Show();
+        }
         #endregion
+
     }
 }

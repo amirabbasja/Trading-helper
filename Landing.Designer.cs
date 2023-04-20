@@ -82,6 +82,7 @@ namespace Trading_Helper
             this.symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.percentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.volume = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnTrades = new System.Windows.Forms.Button();
             this.MainStatusStrip.SuspendLayout();
             this.AccountGroupeBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -597,11 +598,22 @@ namespace Trading_Helper
             this.volume.Name = "volume";
             this.volume.Width = 125;
             // 
+            // btnTrades
+            // 
+            this.btnTrades.Location = new System.Drawing.Point(907, 600);
+            this.btnTrades.Name = "btnTrades";
+            this.btnTrades.Size = new System.Drawing.Size(75, 23);
+            this.btnTrades.TabIndex = 11;
+            this.btnTrades.Text = "Trades";
+            this.btnTrades.UseVisualStyleBackColor = true;
+            this.btnTrades.Click += new System.EventHandler(this.btnTrades_Click);
+            // 
             // Landing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1101, 656);
+            this.Controls.Add(this.btnTrades);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -691,6 +703,7 @@ namespace Trading_Helper
         private System.Windows.Forms.Button btnDtgTopMoversStart;
         private System.Windows.Forms.RadioButton rdiDtgTopMoversKucoin;
         private System.Windows.Forms.RadioButton rdiDtgTopMoversBinance;
+        private System.Windows.Forms.Button btnTrades;
     }
 }
 

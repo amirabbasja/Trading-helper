@@ -81,5 +81,17 @@ namespace Trading_Helper.Properties {
                 this["client"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string tradeHistoryDir {
+            get {
+                return ((string)(this["tradeHistoryDir"]));
+            }
+            set {
+                this["tradeHistoryDir"] = value;
+            }
+        }
     }
 }
