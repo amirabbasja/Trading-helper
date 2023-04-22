@@ -230,7 +230,7 @@ namespace Trading_Helper
                     tradeCount = getLastTradeID(dbObject);
 
                     string sql = "INSERT INTO trades ('symbol', 'state', 'side', 'openDate', 'closeDate', 'openPrice', 'closePrice', 'volume', 'rRatio', 'description') " +
-                        "VALUES (@sym, @state, @side, @openDate, @closeDate, @openPrice, @closePrice, '@volume', @rRatio, @description)";
+                        "VALUES (@sym, @state, @side, @openDate, @closeDate, @openPrice, @closePrice, @volume, @rRatio, @description)";
                     dbObject.openConnection();
                     SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
                     cmd.Parameters.AddWithValue("@sym", txtTradeSym.Text);
@@ -238,14 +238,14 @@ namespace Trading_Helper
                     cmd.Parameters.AddWithValue("@side", side_);
                     cmd.Parameters.AddWithValue("@openDate", txtOpenDate.Text);
                     cmd.Parameters.AddWithValue("@closeDate", null);
-                    cmd.Parameters.AddWithValue("@volume", double.Parse(txtVolume.Text));
+                    cmd.Parameters.AddWithValue("@volume", txtVolume.Text.Replace(",", ""));
                     cmd.Parameters.AddWithValue("@openPrice", double.Parse(txtOpenPrice.Text));
                     cmd.Parameters.AddWithValue("@closePrice", null);
                     cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
                     cmd.Parameters.AddWithValue("@description", txtDescription.Text);
                     var results = cmd.ExecuteNonQuery();
                     dbObject.closeConnection();
-                    picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{tradeCount}.{fileName}" + ".png", ImageFormat.Png);
+                    picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{tradeCount+1}.{fileName}" + ".png", ImageFormat.Png);
                     
                     // Update the open trades list
                     updateOpenTradesList(dbObject);
@@ -281,7 +281,7 @@ namespace Trading_Helper
                             )
                         {
                             // Save the trade's image
-                            picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{tradeCount}.{fileName}" + ".png", ImageFormat.Png);
+                            picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png", ImageFormat.Png);
 
                             string sql = "UPDATE trades SET closePrice = @cPrice, state = @state, closeDate = @cDate, description = @desc, volume = @vol WHERE Id = @tradeNo";
                             dbObject.openConnection();
@@ -360,6 +360,11 @@ namespace Trading_Helper
                 }
 
                 rdoStateClose.Checked = true;
+
+                // Display the trade image
+                string side_ = rdoSideLong.Checked ? "Long" : "Short";
+                string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_Open";
+                picTradeDisplay.Image = Image.FromFile(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
             }
 
         }
