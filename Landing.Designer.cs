@@ -83,6 +83,7 @@ namespace Trading_Helper
             this.percentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.volume = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnTrades = new System.Windows.Forms.Button();
+            this.btnProtfolio = new System.Windows.Forms.Button();
             this.MainStatusStrip.SuspendLayout();
             this.AccountGroupeBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -600,7 +601,7 @@ namespace Trading_Helper
             // 
             // btnTrades
             // 
-            this.btnTrades.Location = new System.Drawing.Point(907, 600);
+            this.btnTrades.Location = new System.Drawing.Point(893, 600);
             this.btnTrades.Name = "btnTrades";
             this.btnTrades.Size = new System.Drawing.Size(75, 23);
             this.btnTrades.TabIndex = 11;
@@ -608,11 +609,22 @@ namespace Trading_Helper
             this.btnTrades.UseVisualStyleBackColor = true;
             this.btnTrades.Click += new System.EventHandler(this.btnTrades_Click);
             // 
+            // btnProtfolio
+            // 
+            this.btnProtfolio.Location = new System.Drawing.Point(812, 600);
+            this.btnProtfolio.Name = "btnProtfolio";
+            this.btnProtfolio.Size = new System.Drawing.Size(75, 23);
+            this.btnProtfolio.TabIndex = 12;
+            this.btnProtfolio.Text = "Protfolio";
+            this.btnProtfolio.UseVisualStyleBackColor = true;
+            this.btnProtfolio.Click += new System.EventHandler(this.btnProtfolio_Click);
+            // 
             // Landing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1101, 656);
+            this.Controls.Add(this.btnProtfolio);
             this.Controls.Add(this.btnTrades);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
@@ -704,6 +716,7 @@ namespace Trading_Helper
         private System.Windows.Forms.RadioButton rdiDtgTopMoversKucoin;
         private System.Windows.Forms.RadioButton rdiDtgTopMoversBinance;
         private System.Windows.Forms.Button btnTrades;
+        private System.Windows.Forms.Button btnProtfolio;
     }
 }
 

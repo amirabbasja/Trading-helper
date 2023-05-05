@@ -391,5 +391,10 @@ namespace Trading_Helper
         }
         #endregion
 
+        private void btnProtfolio_Click(object sender, EventArgs e)
+        {
+            ProtfolioManager frmProtfolioManager = new ProtfolioManager();
+            frmProtfolioManager.Show();
+        }
     }
 }

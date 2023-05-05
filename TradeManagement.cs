@@ -374,6 +374,17 @@ namespace Trading_Helper
             if (rdoStateOpen.Checked == true)
             {
                 lstTrades.ClearSelected();
+
+                // Enable fields necessary for opening a trade and disable the ones for closing a trade
+                txtTradeSym.Enabled = true;
+                txtOpenDate.Enabled = true;
+                txtOpenPrice.Enabled = true;
+                txtVolume.Enabled = true;
+                txttradeRRatio.Enabled = true;
+                txtDescription.Enabled = true;
+
+                txtCloseDate.Enabled = false;
+                txtClosePrice.Enabled = false;
             }
         }
         private void btnRef_Click(object sender, EventArgs e)
