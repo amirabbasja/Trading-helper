@@ -222,7 +222,7 @@ namespace Trading_Helper
             {
                 string side_ = rdoSideLong.Checked ? "Long" : "Short";
                 string state_ = rdoStateOpen.Checked ? "Open" : "Close";
-                string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_{state_}";
+                string fileName = $"{txtTradeSym.Text}_R{double.Parse(txttradeRRatio.Text).ToString()}_{side_}_{state_}";
 
                 if (state_ == "Open")
                 {
@@ -310,6 +310,9 @@ namespace Trading_Helper
                         }
                     }
                 }
+
+                // Add today's date to txtTradeDate textbox for the next trade
+                txtOpenDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
             else
             {
@@ -364,7 +367,17 @@ namespace Trading_Helper
                 // Display the trade image
                 string side_ = rdoSideLong.Checked ? "Long" : "Short";
                 string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_Open";
-                picTradeDisplay.Image = Image.FromFile(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
+
+                // Try to load image
+                try
+                {
+                    picTradeDisplay.Image = methodsClass_.LoadBitmap(txtTradeHistoryDir.Text + "\\" + $"{id}.{fileName}" + ".png");
+                }
+                catch
+                {
+                    // Picture may be deleted or unavalible
+                    picTradeDisplay.Image = null;
+                }
             }
 
         }
@@ -448,6 +461,13 @@ namespace Trading_Helper
                     var temp_ = tradeName.Split('-');
                     int id = int.Parse(temp_[0].Trim());
 
+                    // Delete the trade image
+                    string side_ = rdoSideLong.Checked ? "Long" : "Short";
+                    string state_ = "Open";
+                    string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_{state_}";
+                    File.Delete(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
+                    picTradeDisplay.Image = null;
+
                     // Delete the record from database
                     string sql = "DELETE FROM trades WHERE (Id = @tradeNo)";
                     dbObject.openConnection();
@@ -455,12 +475,6 @@ namespace Trading_Helper
                     cmd.Parameters.AddWithValue("@tradeNo", id);
                     cmd.ExecuteNonQuery();
                     dbObject.closeConnection();
-
-                    // Delete the trade image
-                    string side_ = rdoSideLong.Checked ? "Long" : "Short";
-                    string state_ = "Open";
-                    string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_{state_}";
-                    File.Delete(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
 
                     // Update app status
                     methodsClass_.updateAppStatus("Trade deleted", toolStripStatusLabel1, Color.Red);

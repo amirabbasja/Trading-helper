@@ -605,7 +605,7 @@ namespace Trading_Helper
             this.btnTrades.Name = "btnTrades";
             this.btnTrades.Size = new System.Drawing.Size(75, 23);
             this.btnTrades.TabIndex = 11;
-            this.btnTrades.Text = "Trades";
+            this.btnTrades.Text = "Journal";
             this.btnTrades.UseVisualStyleBackColor = true;
             this.btnTrades.Click += new System.EventHandler(this.btnTrades_Click);
             // 

@@ -10,6 +10,7 @@ using System.Data.SQLite;
 using System.Security.Cryptography;
 using System.Data;
 using System.Drawing;
+using System.IO;
 
 namespace Trading_Helper
 {
@@ -158,6 +159,40 @@ namespace Trading_Helper
             {
                 label.Text = msg;
                 label.ForeColor = (Color)c;
+            }
+        }
+        #endregion
+
+        #region Load image
+        public Bitmap LoadBitmap(string path)
+        {
+            /*
+             * This method loads the image to a bitmap file. Using this method avoids
+             * exceptions when we want to delete a previously loaded image (File in use exception).
+             * 
+             * Args:
+             *      path (string): The path to the desired image
+             *  Returns:
+             *      A new bitmap file 
+             */
+
+            if (File.Exists(path))
+            {
+                // open file in read only mode
+                using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                // get a binary reader for the file stream
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    // copy the content of the file into a memory stream
+                    var memoryStream = new MemoryStream(reader.ReadBytes((int)stream.Length));
+                    // make a new Bitmap object the owner of the MemoryStream
+                    return new Bitmap(memoryStream);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error Loading File.", "Error!", MessageBoxButtons.OK);
+                return null;
             }
         }
         #endregion
