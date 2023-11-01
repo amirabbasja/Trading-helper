@@ -191,6 +191,12 @@ namespace Trading_Helper
             if (Clipboard.ContainsImage())
             {
                 picTrade.Image = Clipboard.GetImage();
+
+                // Clear the picPrevTradeDisplay image when we are adding a new image.
+                // If we add a new image means that we are opening/closing a trade and
+                // if there is an image in picPrevTradeDisplay, might be confusing for
+                // the user.
+                picPrevTradeDisplay.Image = null;
             }
             else
             {
@@ -371,12 +377,12 @@ namespace Trading_Helper
                 // Try to load image
                 try
                 {
-                    picTradeDisplay.Image = methodsClass_.LoadBitmap(txtTradeHistoryDir.Text + "\\" + $"{id}.{fileName}" + ".png");
+                    picPrevTradeDisplay.Image = methodsClass_.LoadBitmap(txtTradeHistoryDir.Text + "\\" + $"{id}.{fileName}" + ".png");
                 }
                 catch
                 {
                     // Picture may be deleted or unavalible
-                    picTradeDisplay.Image = null;
+                    picPrevTradeDisplay.Image = null;
                 }
             }
 
@@ -466,7 +472,7 @@ namespace Trading_Helper
                     string state_ = "Open";
                     string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_{state_}";
                     File.Delete(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
-                    picTradeDisplay.Image = null;
+                    picPrevTradeDisplay.Image = null;
 
                     // Delete the record from database
                     string sql = "DELETE FROM trades WHERE (Id = @tradeNo)";

@@ -61,6 +61,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.picPrevTradeDisplay = new System.Windows.Forms.PictureBox();
             this.chkEditTrade = new System.Windows.Forms.CheckBox();
             this.btnDeleteTrade = new System.Windows.Forms.Button();
             this.btnUpdateTrade = new System.Windows.Forms.Button();
@@ -68,14 +69,13 @@
             this.lstTrades = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.picTradeDisplay = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrade)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPrevTradeDisplay)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTradeDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // txtTradeHistoryDir
@@ -377,7 +377,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.picTradeDisplay);
+            this.groupBox4.Controls.Add(this.picPrevTradeDisplay);
             this.groupBox4.Controls.Add(this.chkEditTrade);
             this.groupBox4.Controls.Add(this.btnDeleteTrade);
             this.groupBox4.Controls.Add(this.btnUpdateTrade);
@@ -389,6 +389,15 @@
             this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Open Trades";
+            // 
+            // picPrevTradeDisplay
+            // 
+            this.picPrevTradeDisplay.Location = new System.Drawing.Point(7, 340);
+            this.picPrevTradeDisplay.Name = "picPrevTradeDisplay";
+            this.picPrevTradeDisplay.Size = new System.Drawing.Size(298, 147);
+            this.picPrevTradeDisplay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picPrevTradeDisplay.TabIndex = 5;
+            this.picPrevTradeDisplay.TabStop = false;
             // 
             // chkEditTrade
             // 
@@ -458,15 +467,6 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(128, 20);
             this.toolStripStatusLabel1.Text = "Waitning for entry";
             // 
-            // picTradeDisplay
-            // 
-            this.picTradeDisplay.Location = new System.Drawing.Point(7, 340);
-            this.picTradeDisplay.Name = "picTradeDisplay";
-            this.picTradeDisplay.Size = new System.Drawing.Size(298, 147);
-            this.picTradeDisplay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picTradeDisplay.TabIndex = 5;
-            this.picTradeDisplay.TabStop = false;
-            // 
             // TradeManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -492,9 +492,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.picTrade)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPrevTradeDisplay)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTradeDisplay)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -541,6 +541,6 @@
         private System.Windows.Forms.Button btnDeleteTrade;
         private System.Windows.Forms.Button btnUpdateTrade;
         private System.Windows.Forms.CheckBox chkEditTrade;
-        private System.Windows.Forms.PictureBox picTradeDisplay;
+        private System.Windows.Forms.PictureBox picPrevTradeDisplay;
     }
 }
