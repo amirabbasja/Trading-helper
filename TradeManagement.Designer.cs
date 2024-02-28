@@ -35,9 +35,9 @@
             this.btnBrowsFolder = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.txtClosePrice = new System.Windows.Forms.TextBox();
+            this.txtUpdatePrice = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.txtCloseDate = new System.Windows.Forms.TextBox();
+            this.txtUpdateDate = new System.Windows.Forms.TextBox();
             this.txtVolume = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.btnRmImage = new System.Windows.Forms.Button();
@@ -47,11 +47,14 @@
             this.txtOpenPrice = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.rdoStateClose = new System.Windows.Forms.RadioButton();
-            this.rdoStateOpen = new System.Windows.Forms.RadioButton();
+            this.rdoActionUpdateReduce = new System.Windows.Forms.RadioButton();
+            this.rdoActionUpdateAdd = new System.Windows.Forms.RadioButton();
+            this.rdoActionUpdate = new System.Windows.Forms.RadioButton();
+            this.rdoActionClose = new System.Windows.Forms.RadioButton();
+            this.rdoActionOpen = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.rdoSideShort = new System.Windows.Forms.RadioButton();
-            this.rdoSideLong = new System.Windows.Forms.RadioButton();
+            this.rdoSideSell = new System.Windows.Forms.RadioButton();
+            this.rdoSideBuy = new System.Windows.Forms.RadioButton();
             this.btnAddImage = new System.Windows.Forms.Button();
             this.picTrade = new System.Windows.Forms.PictureBox();
             this.txtOpenDate = new System.Windows.Forms.TextBox();
@@ -108,9 +111,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.txtClosePrice);
+            this.groupBox1.Controls.Add(this.txtUpdatePrice);
             this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.txtCloseDate);
+            this.groupBox1.Controls.Add(this.txtUpdateDate);
             this.groupBox1.Controls.Add(this.txtVolume);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.btnRmImage);
@@ -139,34 +142,34 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 64);
+            this.label9.Location = new System.Drawing.Point(0, 63);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(76, 16);
+            this.label9.Size = new System.Drawing.Size(86, 16);
             this.label9.TabIndex = 27;
-            this.label9.Text = "Close Price";
+            this.label9.Text = "Update Price";
             // 
-            // txtClosePrice
+            // txtUpdatePrice
             // 
-            this.txtClosePrice.Location = new System.Drawing.Point(83, 60);
-            this.txtClosePrice.Name = "txtClosePrice";
-            this.txtClosePrice.Size = new System.Drawing.Size(100, 22);
-            this.txtClosePrice.TabIndex = 26;
+            this.txtUpdatePrice.Location = new System.Drawing.Point(92, 60);
+            this.txtUpdatePrice.Name = "txtUpdatePrice";
+            this.txtUpdatePrice.Size = new System.Drawing.Size(91, 22);
+            this.txtUpdatePrice.TabIndex = 26;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(186, 62);
+            this.label8.Location = new System.Drawing.Point(199, 62);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(74, 16);
+            this.label8.Size = new System.Drawing.Size(84, 16);
             this.label8.TabIndex = 25;
-            this.label8.Text = "Close Date";
+            this.label8.Text = "Update Date";
             // 
-            // txtCloseDate
+            // txtUpdateDate
             // 
-            this.txtCloseDate.Location = new System.Drawing.Point(264, 59);
-            this.txtCloseDate.Name = "txtCloseDate";
-            this.txtCloseDate.Size = new System.Drawing.Size(89, 22);
-            this.txtCloseDate.TabIndex = 24;
+            this.txtUpdateDate.Location = new System.Drawing.Point(289, 59);
+            this.txtUpdateDate.Name = "txtUpdateDate";
+            this.txtUpdateDate.Size = new System.Drawing.Size(89, 22);
+            this.txtUpdateDate.TabIndex = 24;
             // 
             // txtVolume
             // 
@@ -178,11 +181,11 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(24, 157);
+            this.label7.Location = new System.Drawing.Point(11, 154);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 16);
+            this.label7.Size = new System.Drawing.Size(71, 16);
             this.label7.TabIndex = 22;
-            this.label7.Text = "Volume";
+            this.label7.Text = "Volume ($)";
             // 
             // btnRmImage
             // 
@@ -199,13 +202,13 @@
             this.txtDescription.Location = new System.Drawing.Point(10, 214);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(368, 84);
+            this.txtDescription.Size = new System.Drawing.Size(218, 84);
             this.txtDescription.TabIndex = 20;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(33, 195);
+            this.label6.Location = new System.Drawing.Point(11, 191);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(75, 16);
             this.label6.TabIndex = 19;
@@ -239,72 +242,111 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.rdoStateClose);
-            this.groupBox3.Controls.Add(this.rdoStateOpen);
-            this.groupBox3.Location = new System.Drawing.Point(189, 141);
+            this.groupBox3.Controls.Add(this.rdoActionUpdateReduce);
+            this.groupBox3.Controls.Add(this.rdoActionUpdateAdd);
+            this.groupBox3.Controls.Add(this.rdoActionUpdate);
+            this.groupBox3.Controls.Add(this.rdoActionClose);
+            this.groupBox3.Controls.Add(this.rdoActionOpen);
+            this.groupBox3.Location = new System.Drawing.Point(234, 141);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(174, 49);
+            this.groupBox3.Size = new System.Drawing.Size(144, 157);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "State";
+            this.groupBox3.Text = "Action";
             // 
-            // rdoStateClose
+            // rdoActionUpdateReduce
             // 
-            this.rdoStateClose.AutoSize = true;
-            this.rdoStateClose.Location = new System.Drawing.Point(78, 22);
-            this.rdoStateClose.Name = "rdoStateClose";
-            this.rdoStateClose.Size = new System.Drawing.Size(63, 20);
-            this.rdoStateClose.TabIndex = 1;
-            this.rdoStateClose.TabStop = true;
-            this.rdoStateClose.Text = "Close";
-            this.rdoStateClose.UseVisualStyleBackColor = true;
-            this.rdoStateClose.CheckedChanged += new System.EventHandler(this.rdoStateClose_CheckedChanged);
+            this.rdoActionUpdateReduce.AutoSize = true;
+            this.rdoActionUpdateReduce.Location = new System.Drawing.Point(6, 127);
+            this.rdoActionUpdateReduce.Name = "rdoActionUpdateReduce";
+            this.rdoActionUpdateReduce.Size = new System.Drawing.Size(132, 20);
+            this.rdoActionUpdateReduce.TabIndex = 4;
+            this.rdoActionUpdateReduce.TabStop = true;
+            this.rdoActionUpdateReduce.Text = "Update (Reduce)";
+            this.rdoActionUpdateReduce.UseVisualStyleBackColor = true;
+            this.rdoActionUpdateReduce.CheckedChanged += new System.EventHandler(this.rdoActionUpdateReduce_CheckedChanged);
             // 
-            // rdoStateOpen
+            // rdoActionUpdateAdd
             // 
-            this.rdoStateOpen.AutoSize = true;
-            this.rdoStateOpen.Location = new System.Drawing.Point(6, 20);
-            this.rdoStateOpen.Name = "rdoStateOpen";
-            this.rdoStateOpen.Size = new System.Drawing.Size(61, 20);
-            this.rdoStateOpen.TabIndex = 0;
-            this.rdoStateOpen.TabStop = true;
-            this.rdoStateOpen.Text = "Open";
-            this.rdoStateOpen.UseVisualStyleBackColor = true;
-            this.rdoStateOpen.CheckedChanged += new System.EventHandler(this.rdoStateOpen_CheckedChanged);
+            this.rdoActionUpdateAdd.AutoSize = true;
+            this.rdoActionUpdateAdd.Location = new System.Drawing.Point(6, 101);
+            this.rdoActionUpdateAdd.Name = "rdoActionUpdateAdd";
+            this.rdoActionUpdateAdd.Size = new System.Drawing.Size(109, 20);
+            this.rdoActionUpdateAdd.TabIndex = 3;
+            this.rdoActionUpdateAdd.TabStop = true;
+            this.rdoActionUpdateAdd.Text = "Update (Add)";
+            this.rdoActionUpdateAdd.UseVisualStyleBackColor = true;
+            this.rdoActionUpdateAdd.CheckedChanged += new System.EventHandler(this.rdoActionUpdateAdd_CheckedChanged);
+            // 
+            // rdoActionUpdate
+            // 
+            this.rdoActionUpdate.AutoSize = true;
+            this.rdoActionUpdate.Location = new System.Drawing.Point(6, 74);
+            this.rdoActionUpdate.Name = "rdoActionUpdate";
+            this.rdoActionUpdate.Size = new System.Drawing.Size(73, 20);
+            this.rdoActionUpdate.TabIndex = 2;
+            this.rdoActionUpdate.TabStop = true;
+            this.rdoActionUpdate.Text = "Update";
+            this.rdoActionUpdate.UseVisualStyleBackColor = true;
+            this.rdoActionUpdate.CheckedChanged += new System.EventHandler(this.rdoActionUpdate_CheckedChanged);
+            // 
+            // rdoActionClose
+            // 
+            this.rdoActionClose.AutoSize = true;
+            this.rdoActionClose.Location = new System.Drawing.Point(6, 47);
+            this.rdoActionClose.Name = "rdoActionClose";
+            this.rdoActionClose.Size = new System.Drawing.Size(63, 20);
+            this.rdoActionClose.TabIndex = 1;
+            this.rdoActionClose.TabStop = true;
+            this.rdoActionClose.Text = "Close";
+            this.rdoActionClose.UseVisualStyleBackColor = true;
+            this.rdoActionClose.CheckedChanged += new System.EventHandler(this.rdoStateClose_CheckedChanged);
+            // 
+            // rdoActionOpen
+            // 
+            this.rdoActionOpen.AutoSize = true;
+            this.rdoActionOpen.Location = new System.Drawing.Point(6, 20);
+            this.rdoActionOpen.Name = "rdoActionOpen";
+            this.rdoActionOpen.Size = new System.Drawing.Size(61, 20);
+            this.rdoActionOpen.TabIndex = 0;
+            this.rdoActionOpen.TabStop = true;
+            this.rdoActionOpen.Text = "Open";
+            this.rdoActionOpen.UseVisualStyleBackColor = true;
+            this.rdoActionOpen.CheckedChanged += new System.EventHandler(this.rdoStateOpen_CheckedChanged);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.rdoSideShort);
-            this.groupBox2.Controls.Add(this.rdoSideLong);
+            this.groupBox2.Controls.Add(this.rdoSideSell);
+            this.groupBox2.Controls.Add(this.rdoSideBuy);
             this.groupBox2.Location = new System.Drawing.Point(189, 87);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(176, 48);
+            this.groupBox2.Size = new System.Drawing.Size(189, 48);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Side";
             // 
-            // rdoSideShort
+            // rdoSideSell
             // 
-            this.rdoSideShort.AutoSize = true;
-            this.rdoSideShort.Location = new System.Drawing.Point(78, 21);
-            this.rdoSideShort.Name = "rdoSideShort";
-            this.rdoSideShort.Size = new System.Drawing.Size(59, 20);
-            this.rdoSideShort.TabIndex = 1;
-            this.rdoSideShort.TabStop = true;
-            this.rdoSideShort.Text = "Short";
-            this.rdoSideShort.UseVisualStyleBackColor = true;
+            this.rdoSideSell.AutoSize = true;
+            this.rdoSideSell.Location = new System.Drawing.Point(78, 21);
+            this.rdoSideSell.Name = "rdoSideSell";
+            this.rdoSideSell.Size = new System.Drawing.Size(51, 20);
+            this.rdoSideSell.TabIndex = 1;
+            this.rdoSideSell.TabStop = true;
+            this.rdoSideSell.Text = "Sell";
+            this.rdoSideSell.UseVisualStyleBackColor = true;
             // 
-            // rdoSideLong
+            // rdoSideBuy
             // 
-            this.rdoSideLong.AutoSize = true;
-            this.rdoSideLong.Location = new System.Drawing.Point(9, 21);
-            this.rdoSideLong.Name = "rdoSideLong";
-            this.rdoSideLong.Size = new System.Drawing.Size(58, 20);
-            this.rdoSideLong.TabIndex = 0;
-            this.rdoSideLong.TabStop = true;
-            this.rdoSideLong.Text = "Long";
-            this.rdoSideLong.UseVisualStyleBackColor = true;
-            this.rdoSideLong.CheckedChanged += new System.EventHandler(this.rdoSideLong_CheckedChanged);
+            this.rdoSideBuy.AutoSize = true;
+            this.rdoSideBuy.Location = new System.Drawing.Point(9, 21);
+            this.rdoSideBuy.Name = "rdoSideBuy";
+            this.rdoSideBuy.Size = new System.Drawing.Size(51, 20);
+            this.rdoSideBuy.TabIndex = 0;
+            this.rdoSideBuy.TabStop = true;
+            this.rdoSideBuy.Text = "Buy";
+            this.rdoSideBuy.UseVisualStyleBackColor = true;
+            this.rdoSideBuy.CheckedChanged += new System.EventHandler(this.rdoSideLong_CheckedChanged);
             // 
             // btnAddImage
             // 
@@ -328,7 +370,7 @@
             // 
             // txtOpenDate
             // 
-            this.txtOpenDate.Location = new System.Drawing.Point(264, 31);
+            this.txtOpenDate.Location = new System.Drawing.Point(289, 31);
             this.txtOpenDate.Name = "txtOpenDate";
             this.txtOpenDate.Size = new System.Drawing.Size(89, 22);
             this.txtOpenDate.TabIndex = 11;
@@ -336,7 +378,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(186, 34);
+            this.label5.Location = new System.Drawing.Point(211, 33);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(72, 16);
             this.label5.TabIndex = 10;
@@ -511,11 +553,11 @@
         private System.Windows.Forms.TextBox txtOpenPrice;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.RadioButton rdoStateClose;
-        private System.Windows.Forms.RadioButton rdoStateOpen;
+        private System.Windows.Forms.RadioButton rdoActionClose;
+        private System.Windows.Forms.RadioButton rdoActionOpen;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RadioButton rdoSideShort;
-        private System.Windows.Forms.RadioButton rdoSideLong;
+        private System.Windows.Forms.RadioButton rdoSideSell;
+        private System.Windows.Forms.RadioButton rdoSideBuy;
         private System.Windows.Forms.Button btnAddImage;
         private System.Windows.Forms.PictureBox picTrade;
         private System.Windows.Forms.TextBox txtOpenDate;
@@ -533,14 +575,17 @@
         private System.Windows.Forms.TextBox txtVolume;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txtCloseDate;
+        private System.Windows.Forms.TextBox txtUpdateDate;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox txtClosePrice;
+        private System.Windows.Forms.TextBox txtUpdatePrice;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button btnDeleteTrade;
         private System.Windows.Forms.Button btnUpdateTrade;
         private System.Windows.Forms.CheckBox chkEditTrade;
         private System.Windows.Forms.PictureBox picPrevTradeDisplay;
+        private System.Windows.Forms.RadioButton rdoActionUpdate;
+        private System.Windows.Forms.RadioButton rdoActionUpdateReduce;
+        private System.Windows.Forms.RadioButton rdoActionUpdateAdd;
     }
 }

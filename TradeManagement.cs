@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Analysis;
+﻿using CryptoExchange.Net.CommonObjects;
+using Microsoft.Data.Analysis;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,14 +59,58 @@ namespace Trading_Helper
             lstTrades.Items.Clear();
             for(int i = 0; i < dt.Rows.Count; i++)
             {
-                lstTrades.Items.Add($"{dt.Rows[i]["Id"]} - {dt.Rows[i]["symbol"]}({dt.Rows[i]["side"]})");
+                lstTrades.Items.Add($"{dt.Rows[i]["trade"]}-{dt.Rows[i]["updateNo"]}   {dt.Rows[i]["symbol"]} ({dt.Rows[i]["type"]})");
             }
         }
 
-        private void clearInput()
+        private void updateTextboxesFromSelectedTrade(Database dbObject, int tradeNo, int updateNo)
+        {
+            /*
+             * Updates the encessary textboxes when a trade in the tradelist is selected.
+             * 
+             * Args:
+             *      dbObject: Database: The database object to search the trades in.
+             *      tradeNo: int: The number of the trade to get the data from.
+             *      updateNo: int: The update number of the trade.
+             */
+
+            string sql = $"SELECT * FROM Trades WHERE trade = {tradeNo} AND updateNo = {updateNo}";
+            dbObject.openConnection();
+            SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+            SQLiteDataReader data = cmd.ExecuteReader(CommandBehavior.SingleResult);
+            DataTable dt = methodsClass_.sqliteResultToDataTable(data);
+            dbObject.closeConnection();
+
+            txtDescription.Text = dt.Rows[0]["description"].ToString();
+            txtUpdateDate.Text = dt.Rows[0]["date"].ToString();
+            txtUpdatePrice.Text = dt.Rows[0]["price"].ToString();
+            txtOpenDate.Text = dt.Rows[0]["date"].ToString();
+            txtOpenPrice.Text = dt.Rows[0]["price"].ToString();
+            txtVolume.Text = dt.Rows[0]["volume"].ToString();
+            txttradeRRatio.Text = dt.Rows[0]["rRatio"].ToString();
+            txtTradeSym.Text = dt.Rows[0]["symbol"].ToString();
+
+            string fileName = $"{tradeNo}-{updateNo}-{txtTradeSym.Text}-{dt.Rows[0]["type"]}";
+
+            // Try to load image
+            try
+            {
+                picPrevTradeDisplay.Image = methodsClass_.LoadBitmap(txtTradeHistoryDir.Text + "\\" + $"{fileName}" + ".png");
+            }
+            catch
+            {
+                // Picture may be deleted or unavalible
+                picPrevTradeDisplay.Image = null;
+            }
+        }
+
+        private void clearInput(bool radio)
         {
             /*
              * Clears the trade entry fields 
+             * 
+             * Args:
+             *  radio: bool: Uncheck radio buttunso aswell
              */
 
             // Clear all the text boxes
@@ -75,24 +120,36 @@ namespace Trading_Helper
             txtOpenPrice.Clear();
             txtOpenDate.Clear();
             txtDescription.Clear();
-            txtClosePrice.Clear();
-            txtCloseDate.Clear();
+            txtUpdatePrice.Clear();
+            txtUpdateDate.Clear();
 
             // Clear the input image
             picTrade.Image = null;
+
+            if (radio)
+            {
+                // Uncheck the radio buttons
+                rdoActionClose.Checked = false;
+                rdoActionOpen.Checked = false;
+                rdoActionUpdateAdd.Checked = false;
+                rdoActionUpdate.Checked = false;
+                rdoActionUpdateReduce.Checked = false;
+                rdoSideBuy.Checked = false;
+                rdoSideSell.Checked = false;
+            }
         }
 
-        private int getLastTradeID(Database dbObject)
+        private int getLastTradeNumber(Database dbObject)
         {
             /*
-             * Get the last trade's id. Note that the table has to have the name "Trades"
+             * Get the last trade's number. Note that the table has to have the name "Trades"
              * 
              * Args: 
              *      dbObject (Database): The database object to connect to.
              * Returns:
              *      lastTradeId (int): Self explainatory.
              */
-            string sql = "SELECT * FROM Trades ORDER BY Id DESC LIMIT 1";
+            string sql = "SELECT * FROM Trades ORDER BY trade DESC LIMIT 1";
             dbObject.openConnection();
             SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
             SQLiteDataReader data = cmd.ExecuteReader(CommandBehavior.SingleResult);
@@ -101,13 +158,44 @@ namespace Trading_Helper
             int lastTradeId = 0;
             if (dt.Rows.Count > 0)
             {
-                lastTradeId = int.Parse(dt.Rows[0].ItemArray[0].ToString());
+                lastTradeId = int.Parse(dt.Rows[0]["trade"].ToString());
             }
             
             dbObject.closeConnection();
 
             return lastTradeId;
         }
+
+        private int getlastTradeUpdateNo(Database dbObject, int tradeNo)
+        {
+            /*
+             * Get the desired trade's last update number. Note that the table
+             *  has to have the name "Trades"
+             * 
+             * Args: 
+             *      dbObject (Database): The database object to connect to.
+             *      tradeNo (Database): The number of the desired trade.
+             * Returns:
+             *      lastTradeId (int): Self explainatory.
+             */
+            string sql = "SELECT * FROM Trades WHERE trade = @tradeNo";
+            dbObject.openConnection();
+            SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+            cmd.Parameters.AddWithValue("@tradeNo", tradeNo);
+            SQLiteDataReader data = cmd.ExecuteReader(CommandBehavior.SingleResult);
+            DataTable dt = methodsClass_.sqliteResultToDataTable(data);
+
+            int lastTradeUpdate= 0;
+            if (dt.Rows.Count > 0)
+            {
+                //lastTradeUpdate = int.Parse(dt.Rows[0].ItemArray[0].ToString());
+                lastTradeUpdate = Convert.ToInt32(dt.AsEnumerable().Max(row => row["updateNo"]));
+            }
+
+            dbObject.closeConnection();
+
+            return lastTradeUpdate;
+        } 
         #endregion
 
         #region Events
@@ -126,9 +214,9 @@ namespace Trading_Helper
         private void TradeManagement_Load(object sender, EventArgs e)
         {
             btnUpdateTrade.Enabled = false;
-            txtCloseDate.Enabled = false;
-            txtClosePrice.Enabled = false;
-            rdoStateOpen.Enabled = true;
+            txtUpdateDate.Enabled = false;
+            txtUpdatePrice.Enabled = false;
+            rdoActionOpen.Enabled = true;
 
             // Update the fields for UX improvements
             var properties = new List<KeyValuePair<TextBox, string>>() {
@@ -147,7 +235,7 @@ namespace Trading_Helper
             txtOpenDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
 
             // Get the number amount of count in the folder
-            tradeCount = getLastTradeID(dbObject);
+            tradeCount = getLastTradeNumber(dbObject);
 
             // Add open trades to the listbox
             updateOpenTradesList(dbObject);
@@ -163,11 +251,10 @@ namespace Trading_Helper
 
         private void rdoStateClose_CheckedChanged(object sender, EventArgs e)
         {
-            if (rdoStateClose.Checked == true)
+            if (rdoActionClose.Checked == true)
             {
                 txtOpenDate.Enabled = false;
                 txttradeRRatio.Enabled = false;
-                txtVolume.Enabled = false;
                 txtTradeSym.Enabled = false;
                 txtOpenPrice.Enabled = false;
 
@@ -179,8 +266,8 @@ namespace Trading_Helper
             else
             {
                 txttradeRRatio.Enabled = true;
-                txtCloseDate.Enabled = false;
-                txtClosePrice.Enabled = false;
+                txtUpdateDate.Enabled = false;
+                txtUpdatePrice.Enabled = false;
             }
         }
 
@@ -212,13 +299,14 @@ namespace Trading_Helper
 
         private void btnAddTrade_Click(object sender, EventArgs e)
         {
-            // Checking for duplicate trades
-            tradeCount = getLastTradeID(dbObject);
+            // Getting the last trade number
+            tradeCount = getLastTradeNumber(dbObject);
 
-            // Check side of the trade
+
+            // Check trade details
             if (
-                (rdoSideLong.Checked || rdoSideShort.Checked) &&
-                (rdoStateClose.Checked || rdoStateOpen.Checked) &&
+                (rdoSideBuy.Checked || rdoSideSell.Checked) &&
+                (rdoActionClose.Checked || rdoActionOpen.Checked || rdoActionUpdate.Checked || rdoActionUpdateAdd.Checked || rdoActionUpdateReduce.Checked) &&
                 txtTradeSym.Text.Trim(' ') != null &&
                 txtOpenDate.Text.Trim(' ') != null &&
                 txttradeRRatio.Text.Trim(' ') != null &&
@@ -226,86 +314,128 @@ namespace Trading_Helper
                 txtOpenPrice.Text.Trim(' ') != null
                 ) 
             {
-                string side_ = rdoSideLong.Checked ? "Long" : "Short";
-                string state_ = rdoStateOpen.Checked ? "Open" : "Close";
-                string fileName = $"{txtTradeSym.Text}_R{double.Parse(txttradeRRatio.Text).ToString()}_{side_}_{state_}";
+                string side_ = rdoSideBuy.Checked ? "Buy" : "Sell";
 
-                if (state_ == "Open")
+                string action_;
+                if (rdoActionUpdate.Checked == true || rdoActionUpdateAdd.Checked == true || rdoActionUpdateReduce.Checked == true)
                 {
-                    // Add the trade to the folder
-                    tradeCount = getLastTradeID(dbObject);
-
-                    string sql = "INSERT INTO trades ('symbol', 'state', 'side', 'openDate', 'closeDate', 'openPrice', 'closePrice', 'volume', 'rRatio', 'description') " +
-                        "VALUES (@sym, @state, @side, @openDate, @closeDate, @openPrice, @closePrice, @volume, @rRatio, @description)";
-                    dbObject.openConnection();
-                    SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
-                    cmd.Parameters.AddWithValue("@sym", txtTradeSym.Text);
-                    cmd.Parameters.AddWithValue("@state", state_);
-                    cmd.Parameters.AddWithValue("@side", side_);
-                    cmd.Parameters.AddWithValue("@openDate", txtOpenDate.Text);
-                    cmd.Parameters.AddWithValue("@closeDate", null);
-                    cmd.Parameters.AddWithValue("@volume", txtVolume.Text.Replace(",", ""));
-                    cmd.Parameters.AddWithValue("@openPrice", double.Parse(txtOpenPrice.Text));
-                    cmd.Parameters.AddWithValue("@closePrice", null);
-                    cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
-                    cmd.Parameters.AddWithValue("@description", txtDescription.Text);
-                    var results = cmd.ExecuteNonQuery();
-                    dbObject.closeConnection();
-                    picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{tradeCount+1}.{fileName}" + ".png", ImageFormat.Png);
-                    
-                    // Update the open trades list
-                    updateOpenTradesList(dbObject);
-
-                    // Clear the trade entry input to prevent adding trades more than once
-                    clearInput();
-
-                    // Update app status
-                    methodsClass_.updateAppStatus("Trade added", toolStripStatusLabel1, Color.Green);
+                    action_ = "Update";
                 }
                 else
+                {
+                    action_ = rdoActionOpen.Checked ? "Open" : "Close";
+                }
+                
+
+                string fileName = $"{tradeCount+1}-{1}-{txtTradeSym.Text}-{"open"}";
+
+                if (action_ == "Open")
+                {
+                    if (picTrade.Image != null)
+                    {
+                        // Getting the latest trade number
+                        int tradeNo = getLastTradeNumber(dbObject);
+                        fileName = $"{tradeNo + 1}-{1}-{txtTradeSym.Text}-{"open"}";
+
+                        string sql = "INSERT INTO trades ('trade', 'updateNo', 'type', 'symbol', 'state', 'side', 'date', 'volume', 'price', 'rRatio', 'description') " +
+                        "VALUES (@trade, @updateNo, @type, @symbol, @state, @side, @date, @volume, @price, @rRatio, @description)";
+
+                        dbObject.openConnection();
+                        SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+                        cmd.Parameters.AddWithValue("@trade", tradeNo + 1);
+                        cmd.Parameters.AddWithValue("@updateNo", 1); // If adding a new trade, update number starts from 1
+                        cmd.Parameters.AddWithValue("@type", action_);
+                        cmd.Parameters.AddWithValue("@symbol", txtTradeSym.Text);
+                        cmd.Parameters.AddWithValue("@state", "Open");
+                        cmd.Parameters.AddWithValue("@side", side_);
+                        cmd.Parameters.AddWithValue("@date", txtOpenDate.Text);
+                        cmd.Parameters.AddWithValue("@volume", txtVolume.Text.Replace(",", ""));
+                        cmd.Parameters.AddWithValue("@price", double.Parse(txtOpenPrice.Text));
+                        cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
+                        cmd.Parameters.AddWithValue("@description", txtDescription.Text);
+                        var results = cmd.ExecuteNonQuery();
+                        dbObject.closeConnection();
+                        picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png", ImageFormat.Png);
+
+                        // Update the open trades list
+                        updateOpenTradesList(dbObject);
+
+                        // Clear the trade entry input to prevent adding trades more than once
+                        clearInput(true);
+
+                        // Update app status
+                        methodsClass_.updateAppStatus("Trade added", toolStripStatusLabel1, Color.Green);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't open a trade without an image");
+                    }
+                }
+                else if (action_ == "Close")
                 {
                     // Closing a trade
                     if(lstTrades.SelectedIndex == -1)
                     {
                         // If no open trades have been chosen from the listbox, dont let the user to close trades.
                         MessageBox.Show("Please select an open tarde from the listbox first.");
-                        rdoStateOpen.Checked = true;
+                        rdoActionOpen.Checked = true;
                     }
                     else
                     {
                         // Set the default date
-                        txtCloseDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                        txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                        int tradeNo = int.Parse(lstTrades.SelectedItem.ToString().Split('-')[0]);
+                        int updateNo = getlastTradeUpdateNo(dbObject, tradeNo);
+                        fileName = $"{tradeNo}-{updateNo + 1}-{txtTradeSym.Text}-{action_}";
 
-                        string tradeName = lstTrades.SelectedItem.ToString();
-                        var temp_ = tradeName.Split('-');
-                        int id = int.Parse(temp_[0].Trim());
 
-                        if(
-                            txtCloseDate.Text.Trim() != null &&
-                            txtClosePrice.Text.Trim() != null &&
+                        if (
+                            txtUpdateDate.Text.Trim() != null &&
+                            txtUpdatePrice.Text.Trim() != null &&
                             picTrade.Image != null
                             )
                         {
-                            // Save the trade's image
-                            picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png", ImageFormat.Png);
+                            //string sql = "UPDATE trades SET closePrice = @cPrice, state = @state, closeDate = @cDate, description = @desc, volume = @vol WHERE Id = @tradeNo";
+                            // Get the trade number and update number
 
-                            string sql = "UPDATE trades SET closePrice = @cPrice, state = @state, closeDate = @cDate, description = @desc, volume = @vol WHERE Id = @tradeNo";
+                            string sql = "INSERT INTO trades ('trade', 'updateNo', 'type', 'symbol', 'state', 'side', 'date', 'volume', 'price', 'rRatio', 'description') " +
+                            "VALUES (@trade, @updateNo, @type, @symbol, @state, @side, @date, @volume, @price, @rRatio, @description)";
+
                             dbObject.openConnection();
-                            SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection); ;
-                            cmd.Parameters.AddWithValue("@cPrice", double.Parse(txtClosePrice.Text));
-                            cmd.Parameters.AddWithValue("@cDate", txtCloseDate.Text);
-                            cmd.Parameters.AddWithValue("@desc",txtDescription.Text);
-                            cmd.Parameters.AddWithValue("@vol", double.Parse(txtVolume.Text));
+                            SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+                            cmd.Parameters.AddWithValue("@trade", tradeNo);
+                            cmd.Parameters.AddWithValue("@updateNo", updateNo + 1);
+                            cmd.Parameters.AddWithValue("@type", action_);
+                            cmd.Parameters.AddWithValue("@symbol", txtTradeSym.Text);
                             cmd.Parameters.AddWithValue("@state", "Closed");
-                            cmd.Parameters.AddWithValue("@tradeNo", id);
+                            cmd.Parameters.AddWithValue("@side", side_);
+                            cmd.Parameters.AddWithValue("@date", txtUpdateDate.Text);
+                            cmd.Parameters.AddWithValue("@volume", "all");
+                            cmd.Parameters.AddWithValue("@price", double.Parse(txtUpdatePrice.Text));
+                            cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
+                            cmd.Parameters.AddWithValue("@description", txtDescription.Text);
                             var results = cmd.ExecuteNonQuery();
+                            dbObject.closeConnection();
+
+
+                            // Change the open trades' state to closed
+                            sql = "UPDATE trades SET state = @state WHERE trade = @tradeNo AND state = @stateNew";
+                            dbObject.openConnection();
+                            cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+                            cmd.Parameters.AddWithValue("@tradeNo", tradeNo);
+                            cmd.Parameters.AddWithValue("@state", "Closed");
+                            cmd.Parameters.AddWithValue("@stateNew", "Open");
+                            cmd.ExecuteNonQuery();
                             dbObject.closeConnection();
 
                             // Update the open trades list
                             updateOpenTradesList(dbObject);
 
+                            // Save the trade's image
+                            picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png", ImageFormat.Png);
+
                             // Clear the input
-                            clearInput();
+                            clearInput(true);
 
                             // Update spplication status
                             methodsClass_.updateAppStatus("Trade closed", toolStripStatusLabel1, Color.Green);
@@ -314,6 +444,75 @@ namespace Trading_Helper
                         {
                             MessageBox.Show("Some fields are missing");
                         }
+                    }
+                }
+                else
+                {
+                    // action_ = Update
+                    // Add an update to the previous trade. Can be adding or reducing from position.
+                    // Or a simple chart update.
+
+
+                    if (rdoActionUpdateAdd.Checked)
+                    {
+                        // Adding to a position
+                        action_ = "add";
+
+                    }
+                    else if (rdoActionUpdateReduce.Checked)
+                    {
+                        // Reducing from a position
+                        action_ = "reduce";
+                    }
+                    else
+                    {
+                        // Simple chart update
+                        action_ = "update";
+                    }
+
+                    // Getting the latest trade number
+                    if (lstTrades.SelectedIndex != -1)
+                    {
+                        // Get the trade number and update number
+                        int tradeNo = int.Parse(lstTrades.SelectedItem.ToString().Split('-')[0]);
+                        int updateNo = getlastTradeUpdateNo(dbObject, tradeNo);
+                        fileName = $"{tradeNo}-{updateNo + 1}-{txtTradeSym.Text}-{action_}";
+
+
+                        string sql = "INSERT INTO trades ('trade', 'updateNo', 'type', 'symbol', 'state', 'side', 'date', 'volume', 'price', 'rRatio', 'description') " +
+                        "VALUES (@trade, @updateNo, @type, @symbol, @state, @side, @date, @volume, @price, @rRatio, @description)";
+
+                        dbObject.openConnection();
+                        SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
+                        cmd.Parameters.AddWithValue("@trade", tradeNo);
+                        cmd.Parameters.AddWithValue("@updateNo", updateNo + 1);
+                        cmd.Parameters.AddWithValue("@type", action_);
+                        cmd.Parameters.AddWithValue("@symbol", txtTradeSym.Text);
+                        cmd.Parameters.AddWithValue("@state", "Open");
+                        cmd.Parameters.AddWithValue("@side", side_);
+                        cmd.Parameters.AddWithValue("@date", txtUpdateDate.Text);
+                        cmd.Parameters.AddWithValue("@volume", txtVolume.Text.Replace(",", ""));
+                        cmd.Parameters.AddWithValue("@price", double.Parse(txtUpdatePrice.Text));
+                        cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
+                        cmd.Parameters.AddWithValue("@description", txtDescription.Text);
+                        var results = cmd.ExecuteNonQuery();
+                        dbObject.closeConnection();
+
+                        picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png", ImageFormat.Png);
+
+                        // Update the open trades list
+                        updateOpenTradesList(dbObject);
+
+                        // Clear the trade entry input to prevent adding trades more than once
+                        clearInput(true);
+
+                        // Update app status
+                        methodsClass_.updateAppStatus("Trade update added", toolStripStatusLabel1, Color.Green);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No trades selected to update");
+                        clearInput(true);
                     }
                 }
 
@@ -328,69 +527,41 @@ namespace Trading_Helper
 
         private void lstTrades_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //getlastTradeUpdateNo(dbObject, 1);
             if (lstTrades.SelectedIndex != -1)
             {
+
                 // Enable trade close parameters
-                txtClosePrice.Enabled = true;
-                txtCloseDate.Enabled = true;
+                txtUpdatePrice.Enabled = true;
+                txtUpdateDate.Enabled = true;
 
                 // Clear textboxes
-                clearInput();
+                clearInput(true);
 
                 // Update the default close date
-                txtCloseDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
 
                 string tradeName = lstTrades.SelectedItem.ToString();
                 var temp_ = tradeName.Split('-');
-                int id = int.Parse(temp_[0].Trim());
-                string sql = $"SELECT * FROM Trades WHERE Id = {id}";
-                dbObject.openConnection();
-                SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
-                SQLiteDataReader data = cmd.ExecuteReader(CommandBehavior.SingleResult);
-                DataTable dt = methodsClass_.sqliteResultToDataTable(data);
-                dbObject.closeConnection();
+                int tradeNo = int.Parse(temp_[0].Trim());
+                int updateNo = int.Parse(temp_[1].Split(' ')[0].Trim());
+                
+                // Update the text boxes and the image box
+                updateTextboxesFromSelectedTrade(dbObject, tradeNo, updateNo);
 
-                txtDescription.Text = dt.Rows[0]["description"].ToString();
-                txtOpenDate.Text = dt.Rows[0]["openDate"].ToString();
-                txtOpenPrice.Text = dt.Rows[0]["openPrice"].ToString();
-                txtVolume.Text = dt.Rows[0]["volume"].ToString();
-                txttradeRRatio.Text = dt.Rows[0]["rRatio"].ToString();
-                txtTradeSym.Text = dt.Rows[0]["symbol"].ToString();
+                // Disable the open price and open date. Also disable symbol and rRatio fields
+                txtOpenPrice.Enabled = false;
+                txtOpenDate.Enabled = false;
+                txtTradeSym.Enabled = false;
+                txttradeRRatio.Enabled = false;
 
-                if (dt.Rows[0]["side"].ToString() == "Long")
-                {
-                    rdoSideLong.Checked = true;
-                    rdoSideShort.Checked = false;
-                }
-                else
-                {
-                    rdoSideLong.Checked = false;
-                    rdoSideShort.Checked = true;
-                }
-
-                rdoStateClose.Checked = true;
-
-                // Display the trade image
-                string side_ = rdoSideLong.Checked ? "Long" : "Short";
-                string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_Open";
-
-                // Try to load image
-                try
-                {
-                    picPrevTradeDisplay.Image = methodsClass_.LoadBitmap(txtTradeHistoryDir.Text + "\\" + $"{id}.{fileName}" + ".png");
-                }
-                catch
-                {
-                    // Picture may be deleted or unavalible
-                    picPrevTradeDisplay.Image = null;
-                }
             }
 
         }
 
         private void rdoStateOpen_CheckedChanged(object sender, EventArgs e)
         {
-            if (rdoStateOpen.Checked == true)
+            if (rdoActionOpen.Checked == true)
             {
                 lstTrades.ClearSelected();
 
@@ -402,8 +573,8 @@ namespace Trading_Helper
                 txttradeRRatio.Enabled = true;
                 txtDescription.Enabled = true;
 
-                txtCloseDate.Enabled = false;
-                txtClosePrice.Enabled = false;
+                txtUpdateDate.Enabled = false;
+                txtUpdatePrice.Enabled = false;
             }
         }
         private void btnRef_Click(object sender, EventArgs e)
@@ -431,21 +602,37 @@ namespace Trading_Helper
             {
                 string tradeName = lstTrades.SelectedItem.ToString();
                 var temp_ = tradeName.Split('-');
-                int id = int.Parse(temp_[0].Trim());
-                string side_ = rdoSideLong.Checked ? "Long" : "Short";
+                int tradeNo = int.Parse(temp_[0].Trim());
+                int updateNo = int.Parse(temp_[1].Split(' ')[0].Trim());
+                string side_ = rdoSideBuy.Checked ? "Buy" : "Sell";
+                string action_ = tradeName.Split('(')[1].Split(')')[0];
+                string fileName = $"{tradeNo}-{updateNo}-{txtTradeSym.Text}-{action_}";
 
-                string sql = "UPDATE Trades SET openPrice = @oPrice, openDate = @oDate, description = @desc, volume = @vol WHERE Id = @tradeNo";
+                string sql = "UPDATE Trades SET price = @price, date = @date, description = @desc, volume = @vol WHERE trade = @tradeNo AND updateNo = @updateNo";
                 dbObject.openConnection();
                 SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection); ;
-                cmd.Parameters.AddWithValue("@oPrice", double.Parse(txtOpenPrice.Text));
-                cmd.Parameters.AddWithValue("@oDate", txtOpenDate.Text);
+                cmd.Parameters.AddWithValue("@price", double.Parse(txtOpenPrice.Text));
+                cmd.Parameters.AddWithValue("@date", txtOpenDate.Text);
                 cmd.Parameters.AddWithValue("@desc", txtDescription.Text);
                 cmd.Parameters.AddWithValue("@vol", double.Parse(txtVolume.Text));
                 cmd.Parameters.AddWithValue("@rRatio", double.Parse(txttradeRRatio.Text));
                 cmd.Parameters.AddWithValue("@side", side_);
-                cmd.Parameters.AddWithValue("@tradeNo", id);
+                cmd.Parameters.AddWithValue("@tradeNo", tradeNo);
+                cmd.Parameters.AddWithValue("@updateNo", updateNo);
                 var results = cmd.ExecuteNonQuery();
                 dbObject.closeConnection();
+
+                // Update the image (Delete the old one and add the new one)
+                if (picTrade.Image != null)
+                {
+                    if (File.Exists(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png"))
+                    {
+                        File.Delete(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png");
+                    }
+                    picTrade.Image.Save(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png", ImageFormat.Png);
+                }
+
+                
 
                 // Update app status
                 methodsClass_.updateAppStatus("Trade updated", toolStripStatusLabel1, Color.Red);
@@ -465,20 +652,29 @@ namespace Trading_Helper
                 {
                     string tradeName = lstTrades.SelectedItem.ToString();
                     var temp_ = tradeName.Split('-');
-                    int id = int.Parse(temp_[0].Trim());
+                    int tradeNo = int.Parse(temp_[0].Trim());
+                    int updateNo = getlastTradeUpdateNo(dbObject, tradeNo);
+                    string action_ = tradeName.Split('(')[1].Split(')')[0];
+                    string fileName = $"{tradeNo + 1}-{1}-{txtTradeSym.Text}-{action_}";
 
                     // Delete the trade image
-                    string side_ = rdoSideLong.Checked ? "Long" : "Short";
-                    string state_ = "Open";
-                    string fileName = $"{txtTradeSym.Text}_R{txttradeRRatio.Text}_{side_}_{state_}";
-                    File.Delete(txtTradeHistoryDir.Text + "//" + $"{id}.{fileName}" + ".png");
+                    if (File.Exists(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png"))
+                    {
+                        File.Delete(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No image files were found");
+                    }
+
                     picPrevTradeDisplay.Image = null;
 
                     // Delete the record from database
-                    string sql = "DELETE FROM trades WHERE (Id = @tradeNo)";
+                    string sql = "DELETE FROM trades WHERE trade = @tradeNo AND updateNo = @updateNo";
                     dbObject.openConnection();
                     SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
-                    cmd.Parameters.AddWithValue("@tradeNo", id);
+                    cmd.Parameters.AddWithValue("@tradeNo", tradeNo);
+                    cmd.Parameters.AddWithValue("@updateNo", updateNo);
                     cmd.ExecuteNonQuery();
                     dbObject.closeConnection();
 
@@ -502,15 +698,14 @@ namespace Trading_Helper
                 if(lstTrades.SelectedIndex != -1)
                 {
                     // Disable all elements not related to editing
-                    btnAddImage.Enabled = false;
                     btnDeleteTrade.Enabled = false;
                     btnAddTrade.Enabled = false;
                     btnRmImage.Enabled = false;
-                    txtClosePrice.Enabled = false;
-                    txtCloseDate.Enabled = false;
+                    txtUpdatePrice.Enabled = false;
+                    txtUpdateDate.Enabled = false;
                     txtTradeSym.Enabled = false;
-                    rdoStateClose.Enabled = false;
-                    rdoStateOpen.Enabled = false;
+                    rdoActionClose.Enabled = false;
+                    rdoActionOpen.Enabled = false;
 
                     // Enable all elements related to editing
                     txtOpenDate.Enabled = true;
@@ -532,11 +727,11 @@ namespace Trading_Helper
                 btnDeleteTrade.Enabled = true;
                 btnAddTrade.Enabled = true;
                 btnRmImage.Enabled = true;
-                txtClosePrice.Enabled = true;
-                txtCloseDate.Enabled = true;
+                txtUpdatePrice.Enabled = true;
+                txtUpdateDate.Enabled = true;
                 txtTradeSym.Enabled = true;
-                rdoStateClose.Enabled = true;
-                rdoStateOpen.Enabled = true;
+                rdoActionClose.Enabled = true;
+                rdoActionOpen.Enabled = true;
 
                 // Disable all elements related to editing
                 btnUpdateTrade.Enabled = false;
@@ -550,6 +745,76 @@ namespace Trading_Helper
                     txtOpenPrice.Enabled = false;
                 }
             }
+        }
+
+        private void rdoActionUpdateAdd_CheckedChanged(object sender, EventArgs e)
+        {
+            // An item from listbox has to be selected
+            if (lstTrades.SelectedIndex != -1)
+            {
+                // Update app status
+                methodsClass_.updateAppStatus("Waiting for update entry: Fill update date, description and add an image.", toolStripStatusLabel1, Color.Black);
+
+                // Update the text boxes
+                txtUpdatePrice.Text = string.Empty;
+                txtDescription.Text = string.Empty;
+                txtVolume.Text = string.Empty;
+                picPrevTradeDisplay.Image = null;
+            }
+            else
+            {
+                MessageBox.Show("First select a trade from the open trades list");
+                clearInput(true);
+            }
+        }
+
+        private void rdoActionUpdateReduce_CheckedChanged(object sender, EventArgs e)
+        {
+            // An item from listbox has to be selected
+            if (lstTrades.SelectedIndex != -1)
+            {
+                // Update app status
+                methodsClass_.updateAppStatus("Waiting for update entry: Fill update date, description and add an image.", toolStripStatusLabel1, Color.Black);
+
+                // Update the text boxes
+                txtUpdatePrice.Text = string.Empty;
+                txtDescription.Text = string.Empty;
+                txtVolume.Text = string.Empty;
+                picPrevTradeDisplay.Image = null;
+            }
+            else
+            {
+                MessageBox.Show("First select a trade from the open trades list");
+                clearInput(true);
+            }
+        }
+
+        private void rdoActionUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            // An item from listbox has to be selected
+            if (lstTrades.SelectedIndex != -1)
+            {
+                // Update app status
+                methodsClass_.updateAppStatus("Waiting for update entry: Fill update date, description and add an image.", toolStripStatusLabel1, Color.Black);
+
+                // Disable all of the text boxs except description
+                clearInput(false);
+                txtOpenDate.Enabled=false;
+                txtOpenPrice.Enabled=false;
+                txtUpdateDate.Enabled=false;    
+                txtTradeSym.Enabled=false;
+                txtVolume.Enabled = false;
+                txtUpdatePrice.Enabled = false;
+
+                // Enable update date
+                txtUpdateDate.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("First select a trade from the open trades list");
+                clearInput(true);
+            }
+
         }
     }
 }
