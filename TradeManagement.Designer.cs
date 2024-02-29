@@ -72,6 +72,7 @@
             this.lstTrades = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.chkShowClosedTrades = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -419,6 +420,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.chkShowClosedTrades);
             this.groupBox4.Controls.Add(this.picPrevTradeDisplay);
             this.groupBox4.Controls.Add(this.chkEditTrade);
             this.groupBox4.Controls.Add(this.btnDeleteTrade);
@@ -434,9 +436,9 @@
             // 
             // picPrevTradeDisplay
             // 
-            this.picPrevTradeDisplay.Location = new System.Drawing.Point(7, 340);
+            this.picPrevTradeDisplay.Location = new System.Drawing.Point(7, 341);
             this.picPrevTradeDisplay.Name = "picPrevTradeDisplay";
-            this.picPrevTradeDisplay.Size = new System.Drawing.Size(298, 147);
+            this.picPrevTradeDisplay.Size = new System.Drawing.Size(298, 146);
             this.picPrevTradeDisplay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picPrevTradeDisplay.TabIndex = 5;
             this.picPrevTradeDisplay.TabStop = false;
@@ -444,7 +446,7 @@
             // chkEditTrade
             // 
             this.chkEditTrade.AutoSize = true;
-            this.chkEditTrade.Location = new System.Drawing.Point(7, 311);
+            this.chkEditTrade.Location = new System.Drawing.Point(7, 315);
             this.chkEditTrade.Name = "chkEditTrade";
             this.chkEditTrade.Size = new System.Drawing.Size(52, 20);
             this.chkEditTrade.TabIndex = 4;
@@ -454,7 +456,7 @@
             // 
             // btnDeleteTrade
             // 
-            this.btnDeleteTrade.Location = new System.Drawing.Point(187, 307);
+            this.btnDeleteTrade.Location = new System.Drawing.Point(163, 311);
             this.btnDeleteTrade.Name = "btnDeleteTrade";
             this.btnDeleteTrade.Size = new System.Drawing.Size(67, 27);
             this.btnDeleteTrade.TabIndex = 3;
@@ -464,7 +466,7 @@
             // 
             // btnUpdateTrade
             // 
-            this.btnUpdateTrade.Location = new System.Drawing.Point(106, 307);
+            this.btnUpdateTrade.Location = new System.Drawing.Point(80, 310);
             this.btnUpdateTrade.Name = "btnUpdateTrade";
             this.btnUpdateTrade.Size = new System.Drawing.Size(75, 27);
             this.btnUpdateTrade.TabIndex = 2;
@@ -474,9 +476,9 @@
             // 
             // btnRef
             // 
-            this.btnRef.Location = new System.Drawing.Point(260, 307);
+            this.btnRef.Location = new System.Drawing.Point(236, 310);
             this.btnRef.Name = "btnRef";
-            this.btnRef.Size = new System.Drawing.Size(45, 27);
+            this.btnRef.Size = new System.Drawing.Size(69, 27);
             this.btnRef.TabIndex = 1;
             this.btnRef.Text = "REF";
             this.btnRef.UseVisualStyleBackColor = true;
@@ -488,7 +490,7 @@
             this.lstTrades.ItemHeight = 16;
             this.lstTrades.Location = new System.Drawing.Point(7, 25);
             this.lstTrades.Name = "lstTrades";
-            this.lstTrades.Size = new System.Drawing.Size(298, 276);
+            this.lstTrades.Size = new System.Drawing.Size(298, 260);
             this.lstTrades.TabIndex = 0;
             this.lstTrades.SelectedIndexChanged += new System.EventHandler(this.lstTrades_SelectedIndexChanged);
             // 
@@ -508,6 +510,17 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(128, 20);
             this.toolStripStatusLabel1.Text = "Waitning for entry";
+            // 
+            // chkShowClosedTrades
+            // 
+            this.chkShowClosedTrades.AutoSize = true;
+            this.chkShowClosedTrades.Location = new System.Drawing.Point(7, 291);
+            this.chkShowClosedTrades.Name = "chkShowClosedTrades";
+            this.chkShowClosedTrades.Size = new System.Drawing.Size(191, 20);
+            this.chkShowClosedTrades.TabIndex = 6;
+            this.chkShowClosedTrades.Text = "Show closed trades as well";
+            this.chkShowClosedTrades.UseVisualStyleBackColor = true;
+            this.chkShowClosedTrades.CheckedChanged += new System.EventHandler(this.chkShowClosedTrades_CheckedChanged);
             // 
             // TradeManagement
             // 
@@ -587,5 +600,6 @@
         private System.Windows.Forms.RadioButton rdoActionUpdate;
         private System.Windows.Forms.RadioButton rdoActionUpdateReduce;
         private System.Windows.Forms.RadioButton rdoActionUpdateAdd;
+        private System.Windows.Forms.CheckBox chkShowClosedTrades;
     }
 }

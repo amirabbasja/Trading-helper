@@ -37,18 +37,29 @@ namespace Trading_Helper
         }
 
         #region Methods
-        private void updateOpenTradesList(Database dbObject)
+        private void updateOpenTradesList(Database dbObject, bool deliverAll = false)
         {
             /*
              * Update the listbox with the open trades.
              * Args:
-             *      path (string): The path of the folder
+             *      path: string: The path of the folder
+             *      deliverAll: bool: If true, loads all of the trades, if false, only open trades are listed
              * Returns:
              *      Void
              */
 
             // Get the open trades
-            string sql = "SELECT * FROM Trades WHERE state = 'Open'";
+            string sql = "";
+
+            if (deliverAll)
+            {
+                sql = "SELECT * FROM Trades ORDER BY trade";
+            }
+            else
+            {
+                sql = "SELECT * FROM Trades WHERE state = 'Open' ORDER BY trade";
+            }
+
             dbObject.openConnection();
             SQLiteCommand cmd = new SQLiteCommand(sql, dbObject.mainConnection);
             SQLiteDataReader data = cmd.ExecuteReader(CommandBehavior.SingleResult);
@@ -57,9 +68,19 @@ namespace Trading_Helper
 
             // Add the open trades to the listbox
             lstTrades.Items.Clear();
+
             for(int i = 0; i < dt.Rows.Count; i++)
             {
-                lstTrades.Items.Add($"{dt.Rows[i]["trade"]}-{dt.Rows[i]["updateNo"]}   {dt.Rows[i]["symbol"]} ({dt.Rows[i]["type"]})");
+                if (dt.Rows[i]["state"].ToString().Trim() == "Closed")
+                {
+                    // Adding closed trades
+                    lstTrades.Items.Add($"{dt.Rows[i]["trade"]}-{dt.Rows[i]["updateNo"]}   {dt.Rows[i]["symbol"]} ({dt.Rows[i]["type"]})      [Closed]");
+                }
+                else
+                {
+                    // Adding open trades
+                    lstTrades.Items.Add($"{dt.Rows[i]["trade"]}-{dt.Rows[i]["updateNo"]}   {dt.Rows[i]["symbol"]} ({dt.Rows[i]["type"]})");
+                }
             }
         }
 
@@ -137,6 +158,26 @@ namespace Trading_Helper
                 rdoSideBuy.Checked = false;
                 rdoSideSell.Checked = false;
             }
+        }
+
+        private void enableInputs()
+        {
+            /*
+             * Enables trade entry fields 
+             * 
+             * Args:
+             * 
+             */
+
+            txtTradeSym.Enabled = true;
+            txtOpenDate.Enabled = true;
+            txtOpenPrice.Enabled = true;
+            txtVolume.Enabled = true;
+            txttradeRRatio.Enabled = true;
+            txtDescription.Enabled = true;
+            txtUpdateDate.Enabled = true;
+            txtUpdatePrice.Enabled = true;
+
         }
 
         private int getLastTradeNumber(Database dbObject)
@@ -518,11 +559,24 @@ namespace Trading_Helper
 
                 // Add today's date to txtTradeDate textbox for the next trade
                 txtOpenDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+
+                // reset all fields
+                clearInput(true);
+
+                txtUpdateDate.Enabled = true;
+                txtOpenDate.Enabled = true;
+                txtVolume.Enabled = true;
+                txtDescription.Enabled = true;
+                txttradeRRatio.Enabled = true;
+                txtTradeSym.Enabled = true;
+                txtUpdatePrice.Enabled = true;
+                txtOpenPrice.Enabled = true;
             }
             else
             {
                 MessageBox.Show("Some field are invalid");
             }
+
         }
 
         private void lstTrades_SelectedIndexChanged(object sender, EventArgs e)
@@ -579,8 +633,10 @@ namespace Trading_Helper
         }
         private void btnRef_Click(object sender, EventArgs e)
         {
+            bool tmpBool = false;
             // Update the listbox
-            updateOpenTradesList(dbObject);
+            if (chkShowClosedTrades.Checked == true) { tmpBool = true; } else { tmpBool = false; }
+            updateOpenTradesList(dbObject, tmpBool);
         }
 
         private void rdoSideLong_CheckedChanged(object sender, EventArgs e)
@@ -760,6 +816,8 @@ namespace Trading_Helper
                 txtDescription.Text = string.Empty;
                 txtVolume.Text = string.Empty;
                 picPrevTradeDisplay.Image = null;
+
+                txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
             else
             {
@@ -781,6 +839,8 @@ namespace Trading_Helper
                 txtDescription.Text = string.Empty;
                 txtVolume.Text = string.Empty;
                 picPrevTradeDisplay.Image = null;
+
+                txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
             else
             {
@@ -808,6 +868,8 @@ namespace Trading_Helper
 
                 // Enable update date
                 txtUpdateDate.Enabled = true;
+
+                txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
             else
             {
@@ -815,6 +877,36 @@ namespace Trading_Helper
                 clearInput(true);
             }
 
+        }
+
+        private void chkShowClosedTrades_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkShowClosedTrades.Checked == true)
+            {
+                // Activates if we want to show closed trades as well
+
+                // Clear all inputs
+                clearInput(true);
+
+                // Update the listbox
+                updateOpenTradesList(dbObject, true);
+
+                // Enable inputs
+                enableInputs();
+            }
+            else
+            {
+                // Activates if we want to show open trades only (default)
+
+                // Clear all inputs
+                clearInput(true);
+
+                // Update the listbox
+                updateOpenTradesList(dbObject, false);
+
+                // Enable inputs
+                enableInputs();
+            }
         }
     }
 }
