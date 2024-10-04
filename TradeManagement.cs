@@ -249,6 +249,12 @@ namespace Trading_Helper
                 methodsClass_.saveUserProperties(
                     new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("tradeHistoryDir", txtTradeHistoryDir.Text) }
                     );
+
+                // Close the current form, then make a new form
+                this.Hide();
+                TradeManagement frmTradeManagement = new TradeManagement();
+                frmTradeManagement.Show();
+                this.Close();
             }
         }
 
@@ -270,6 +276,9 @@ namespace Trading_Helper
             if (txtTradeHistoryDir.Text != null)
             {
                 folderBrowserDialog1.SelectedPath = txtTradeHistoryDir.Text;
+
+                // Also update the session name (which is the directory name of txtTradeHistoryDir)
+                lblSessionName.Text = txtTradeHistoryDir.Text.Split('\\').Last();
             }
 
             // Add today's date to txtTradeDate textbox
@@ -281,6 +290,7 @@ namespace Trading_Helper
             // Add open trades to the listbox
             updateOpenTradesList(dbObject);
         }
+        
         private void TradeManagement_FormClosing(object sender, FormClosingEventArgs e)
         {
             var properties = new List<KeyValuePair<string, string>>() {
@@ -311,7 +321,6 @@ namespace Trading_Helper
                 txtUpdatePrice.Enabled = false;
             }
         }
-
 
         private void btnAddImage_Click(object sender, EventArgs e)
         {
@@ -631,6 +640,7 @@ namespace Trading_Helper
                 txtUpdatePrice.Enabled = false;
             }
         }
+      
         private void btnRef_Click(object sender, EventArgs e)
         {
             bool tmpBool = false;
