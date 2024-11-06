@@ -34,6 +34,8 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.btnBrowsFolder = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnAddNowDate2 = new System.Windows.Forms.Button();
+            this.btnAddNowDate1 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.txtUpdatePrice = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -112,6 +114,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnAddNowDate2);
+            this.groupBox1.Controls.Add(this.btnAddNowDate1);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.txtUpdatePrice);
             this.groupBox1.Controls.Add(this.label8);
@@ -136,10 +140,28 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(329, 53);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(384, 526);
+            this.groupBox1.Size = new System.Drawing.Size(439, 526);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add trade";
+            // 
+            // btnAddNowDate2
+            // 
+            this.btnAddNowDate2.Location = new System.Drawing.Point(284, 56);
+            this.btnAddNowDate2.Name = "btnAddNowDate2";
+            this.btnAddNowDate2.Size = new System.Drawing.Size(15, 26);
+            this.btnAddNowDate2.TabIndex = 29;
+            this.btnAddNowDate2.UseVisualStyleBackColor = true;
+            this.btnAddNowDate2.Click += new System.EventHandler(this.btnAddNowDate2_Click);
+            // 
+            // btnAddNowDate1
+            // 
+            this.btnAddNowDate1.Location = new System.Drawing.Point(284, 29);
+            this.btnAddNowDate1.Name = "btnAddNowDate1";
+            this.btnAddNowDate1.Size = new System.Drawing.Size(15, 26);
+            this.btnAddNowDate1.TabIndex = 28;
+            this.btnAddNowDate1.UseVisualStyleBackColor = true;
+            this.btnAddNowDate1.Click += new System.EventHandler(this.btnAddNowDate1_Click);
             // 
             // label9
             // 
@@ -160,7 +182,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(199, 62);
+            this.label8.Location = new System.Drawing.Point(194, 62);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(84, 16);
             this.label8.TabIndex = 25;
@@ -168,9 +190,9 @@
             // 
             // txtUpdateDate
             // 
-            this.txtUpdateDate.Location = new System.Drawing.Point(289, 59);
+            this.txtUpdateDate.Location = new System.Drawing.Point(305, 59);
             this.txtUpdateDate.Name = "txtUpdateDate";
-            this.txtUpdateDate.Size = new System.Drawing.Size(89, 22);
+            this.txtUpdateDate.Size = new System.Drawing.Size(122, 22);
             this.txtUpdateDate.TabIndex = 24;
             // 
             // txtVolume
@@ -204,7 +226,7 @@
             this.txtDescription.Location = new System.Drawing.Point(10, 214);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(218, 84);
+            this.txtDescription.Size = new System.Drawing.Size(268, 84);
             this.txtDescription.TabIndex = 20;
             // 
             // label6
@@ -218,7 +240,7 @@
             // 
             // btnAddTrade
             // 
-            this.btnAddTrade.Location = new System.Drawing.Point(294, 494);
+            this.btnAddTrade.Location = new System.Drawing.Point(345, 494);
             this.btnAddTrade.Name = "btnAddTrade";
             this.btnAddTrade.Size = new System.Drawing.Size(88, 29);
             this.btnAddTrade.TabIndex = 18;
@@ -249,7 +271,7 @@
             this.groupBox3.Controls.Add(this.rdoActionUpdate);
             this.groupBox3.Controls.Add(this.rdoActionClose);
             this.groupBox3.Controls.Add(this.rdoActionOpen);
-            this.groupBox3.Location = new System.Drawing.Point(234, 141);
+            this.groupBox3.Location = new System.Drawing.Point(289, 141);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(144, 157);
             this.groupBox3.TabIndex = 15;
@@ -322,7 +344,7 @@
             this.groupBox2.Controls.Add(this.rdoSideBuy);
             this.groupBox2.Location = new System.Drawing.Point(189, 87);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(189, 48);
+            this.groupBox2.Size = new System.Drawing.Size(244, 48);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Side";
@@ -365,22 +387,22 @@
             this.picTrade.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.picTrade.Location = new System.Drawing.Point(10, 313);
             this.picTrade.Name = "picTrade";
-            this.picTrade.Size = new System.Drawing.Size(368, 178);
+            this.picTrade.Size = new System.Drawing.Size(423, 178);
             this.picTrade.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picTrade.TabIndex = 12;
             this.picTrade.TabStop = false;
             // 
             // txtOpenDate
             // 
-            this.txtOpenDate.Location = new System.Drawing.Point(289, 31);
+            this.txtOpenDate.Location = new System.Drawing.Point(305, 31);
             this.txtOpenDate.Name = "txtOpenDate";
-            this.txtOpenDate.Size = new System.Drawing.Size(89, 22);
+            this.txtOpenDate.Size = new System.Drawing.Size(122, 22);
             this.txtOpenDate.TabIndex = 11;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(211, 33);
+            this.label5.Location = new System.Drawing.Point(196, 33);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(72, 16);
             this.label5.TabIndex = 10;
@@ -468,6 +490,7 @@
             // 
             // btnDeleteTrade
             // 
+            this.btnDeleteTrade.Enabled = false;
             this.btnDeleteTrade.Location = new System.Drawing.Point(163, 343);
             this.btnDeleteTrade.Name = "btnDeleteTrade";
             this.btnDeleteTrade.Size = new System.Drawing.Size(67, 27);
@@ -513,7 +536,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 585);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(725, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(780, 26);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -539,7 +562,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(725, 611);
+            this.ClientSize = new System.Drawing.Size(780, 611);
             this.Controls.Add(this.lblSessionName);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox4);
@@ -616,5 +639,7 @@
         private System.Windows.Forms.RadioButton rdoActionUpdateAdd;
         private System.Windows.Forms.CheckBox chkShowClosedTrades;
         private System.Windows.Forms.Label lblSessionName;
+        private System.Windows.Forms.Button btnAddNowDate2;
+        private System.Windows.Forms.Button btnAddNowDate1;
     }
 }

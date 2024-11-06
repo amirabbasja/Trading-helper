@@ -520,12 +520,12 @@ namespace Trading_Helper
                         action_ = "update";
                     }
 
-                    // Getting the latest trade number
                     if (lstTrades.SelectedIndex != -1)
                     {
                         // Get the trade number and update number
                         int tradeNo = int.Parse(lstTrades.SelectedItem.ToString().Split('-')[0]);
                         int updateNo = getlastTradeUpdateNo(dbObject, tradeNo);
+                        string state = lstTrades.SelectedItem.ToString().Contains("(Open)") ? "Open" : lstTrades.SelectedItem.ToString().Contains("[Closed]") ? "Closed" : "nan";
                         fileName = $"{tradeNo}-{updateNo + 1}-{txtTradeSym.Text}-{action_}";
 
 
@@ -538,7 +538,7 @@ namespace Trading_Helper
                         cmd.Parameters.AddWithValue("@updateNo", updateNo + 1);
                         cmd.Parameters.AddWithValue("@type", action_);
                         cmd.Parameters.AddWithValue("@symbol", txtTradeSym.Text);
-                        cmd.Parameters.AddWithValue("@state", "Open");
+                        cmd.Parameters.AddWithValue("@state", state);
                         cmd.Parameters.AddWithValue("@side", side_);
                         cmd.Parameters.AddWithValue("@date", txtUpdateDate.Text);
                         cmd.Parameters.AddWithValue("@volume", txtVolume.Text.Replace(",", ""));
@@ -593,6 +593,24 @@ namespace Trading_Helper
             //getlastTradeUpdateNo(dbObject, 1);
             if (lstTrades.SelectedIndex != -1)
             {
+                // If we are not editing closed trades, when we select a trade to update, the selected item in the list box will change to the opening trade
+                if (chkShowClosedTrades.Checked == false)
+                {
+                    var selectedtext = lstTrades.Items[lstTrades.SelectedIndex].ToString();
+                    var i = 0;
+                    foreach (var trade in lstTrades.Items)
+                    {
+                        if (trade.ToString().Contains(selectedtext.Split('-')[0].ToString() + "-1"))
+                        {
+                            lstTrades.SelectedIndex = i;
+                            break;
+                        }
+                        i++;
+                    }
+                }
+
+
+                
 
                 // Enable trade close parameters
                 txtUpdatePrice.Enabled = true;
@@ -721,7 +739,7 @@ namespace Trading_Helper
                     int tradeNo = int.Parse(temp_[0].Trim());
                     int updateNo = getlastTradeUpdateNo(dbObject, tradeNo);
                     string action_ = tradeName.Split('(')[1].Split(')')[0];
-                    string fileName = $"{tradeNo + 1}-{1}-{txtTradeSym.Text}-{action_}";
+                    string fileName = $"{tradeNo}-{updateNo}-{txtTradeSym.Text}-{action_}";
 
                     // Delete the trade image
                     if (File.Exists(txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png"))
@@ -730,7 +748,7 @@ namespace Trading_Helper
                     }
                     else
                     {
-                        MessageBox.Show("No image files were found");
+                        MessageBox.Show("Couldn't find the trade image to delete  "+ txtTradeHistoryDir.Text + "//" + $"{fileName}" + ".png");
                     }
 
                     picPrevTradeDisplay.Image = null;
@@ -749,6 +767,9 @@ namespace Trading_Helper
 
                     // Update open trades listbox
                     updateOpenTradesList(dbObject);
+
+                    // Disable the checkbox
+                    chkShowClosedTrades.Checked = false;
                 }
                 else if (dialogResult == DialogResult.No)
                 {
@@ -831,8 +852,10 @@ namespace Trading_Helper
             }
             else
             {
-                MessageBox.Show("First select a trade from the open trades list");
-                clearInput(true);
+                if(rdoActionUpdate.Checked != false  || rdoActionUpdateAdd.Checked != false || rdoActionUpdateReduce.Checked != false)
+                {
+                    MessageBox.Show("First select a trade from the open trades list");
+                }
             }
         }
 
@@ -854,8 +877,10 @@ namespace Trading_Helper
             }
             else
             {
-                MessageBox.Show("First select a trade from the open trades list");
-                clearInput(true);
+                if (rdoActionUpdate.Checked != false || rdoActionUpdateAdd.Checked != false || rdoActionUpdateReduce.Checked != false)
+                {
+                    MessageBox.Show("First select a trade from the open trades list");
+                }
             }
         }
 
@@ -868,13 +893,18 @@ namespace Trading_Helper
                 methodsClass_.updateAppStatus("Waiting for update entry: Fill update date, description and add an image.", toolStripStatusLabel1, Color.Black);
 
                 // Disable all of the text boxs except description
-                clearInput(false);
                 txtOpenDate.Enabled=false;
                 txtOpenPrice.Enabled=false;
-                txtUpdateDate.Enabled=false;    
+                txttradeRRatio.Enabled=false;
                 txtTradeSym.Enabled=false;
                 txtVolume.Enabled = false;
                 txtUpdatePrice.Enabled = false;
+
+                txtOpenDate.Text = "";
+                txtOpenPrice.Text = "0";
+                txttradeRRatio.Text = "0";
+                txtVolume.Text = "0";
+                txtUpdatePrice.Text = "0";
 
                 // Enable update date
                 txtUpdateDate.Enabled = true;
@@ -883,8 +913,10 @@ namespace Trading_Helper
             }
             else
             {
-                MessageBox.Show("First select a trade from the open trades list");
-                clearInput(true);
+                if (rdoActionUpdate.Checked != false || rdoActionUpdateAdd.Checked != false || rdoActionUpdateReduce.Checked != false)
+                {
+                    MessageBox.Show("First select a trade from the open trades list");
+                }
             }
 
         }
@@ -903,6 +935,9 @@ namespace Trading_Helper
 
                 // Enable inputs
                 enableInputs();
+
+                // Enable delete button
+                btnDeleteTrade.Enabled = true;
             }
             else
             {
@@ -916,6 +951,21 @@ namespace Trading_Helper
 
                 // Enable inputs
                 enableInputs();
+            }
+        }
+
+        private void btnAddNowDate1_Click(object sender, EventArgs e)
+        {
+            // Add Now's date to the textbox
+            txtOpenDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+        }
+
+        private void btnAddNowDate2_Click(object sender, EventArgs e)
+        {
+            // Add Now's date to the textbox
+            if (txtUpdateDate.Enabled == true)
+            {
+                txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
         }
     }
