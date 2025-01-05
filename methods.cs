@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using OfficeOpenXml;
 
 namespace Trading_Helper
 {
@@ -134,6 +135,81 @@ namespace Trading_Helper
             return dt;
         }
         #endregion
+
+        public static void ExportToExcel(string sqliteDbPath, string excelOutputPath, string tableName = null)
+        {
+            // Set EPPlus license context
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var connection = new SQLiteConnection($"Data source={sqliteDbPath}/database.db"))
+            {
+                connection.Open();
+
+                // Get list of tables if no specific table is provided
+                var tables = new List<string>();
+                if (string.IsNullOrEmpty(tableName))
+                {
+                    using (var command = new SQLiteCommand(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+                        connection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                tables.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    tables.Add(tableName);
+                }
+
+                using (var excelPackage = new ExcelPackage(new FileInfo($"{sqliteDbPath}/{excelOutputPath}")))
+                {
+                    foreach (var table in tables)
+                    {
+                        // Create worksheet for each table
+                        var worksheet = excelPackage.Workbook.Worksheets.Add(table);
+
+                        // Get table data
+                        using (var command = new SQLiteCommand($"SELECT * FROM {table}", connection))
+                        {
+                            using (var adapter = new SQLiteDataAdapter(command))
+                            {
+                                var dataTable = new DataTable();
+                                adapter.Fill(dataTable);
+
+                                // Write headers
+                                for (int i = 0; i < dataTable.Columns.Count; i++)
+                                {
+                                    worksheet.Cells[1, i + 1].Value = dataTable.Columns[i].ColumnName;
+                                    // Make headers bold
+                                    worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                                }
+
+                                // Write data
+                                for (int row = 0; row < dataTable.Rows.Count; row++)
+                                {
+                                    for (int col = 0; col < dataTable.Columns.Count; col++)
+                                    {
+                                        worksheet.Cells[row + 2, col + 1].Value = dataTable.Rows[row][col];
+                                    }
+                                }
+
+                                // Auto-fit columns
+                                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+                            }
+                        }
+                    }
+
+                    // Save the Excel file
+                    excelPackage.Save();
+                }
+            }
+        }
 
         #region Update status strip
         public void updateAppStatus(string msg, ToolStripStatusLabel label, Color? c = null)

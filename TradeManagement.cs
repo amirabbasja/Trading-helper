@@ -968,5 +968,10 @@ namespace Trading_Helper
                 txtUpdateDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
             }
         }
+
+        private void btnExportDB_Click(object sender, EventArgs e)
+        {
+            methods.ExportToExcel(Settings.Default["tradeHistoryDir"].ToString(), "export.xlsx");
+        }
     }
 }

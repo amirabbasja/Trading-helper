@@ -76,6 +76,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblSessionName = new System.Windows.Forms.Label();
+            this.btnExportDB = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -552,17 +553,28 @@
             this.lblSessionName.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lblSessionName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSessionName.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblSessionName.Location = new System.Drawing.Point(339, 21);
+            this.lblSessionName.Location = new System.Drawing.Point(357, 21);
             this.lblSessionName.Name = "lblSessionName";
             this.lblSessionName.Size = new System.Drawing.Size(155, 22);
             this.lblSessionName.TabIndex = 6;
             this.lblSessionName.Text = "No folder selected";
+            // 
+            // btnExportDB
+            // 
+            this.btnExportDB.Location = new System.Drawing.Point(518, 21);
+            this.btnExportDB.Name = "btnExportDB";
+            this.btnExportDB.Size = new System.Drawing.Size(121, 23);
+            this.btnExportDB.TabIndex = 7;
+            this.btnExportDB.Text = "Export database";
+            this.btnExportDB.UseVisualStyleBackColor = true;
+            this.btnExportDB.Click += new System.EventHandler(this.btnExportDB_Click);
             // 
             // TradeManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(780, 611);
+            this.Controls.Add(this.btnExportDB);
             this.Controls.Add(this.lblSessionName);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox4);
@@ -641,5 +653,6 @@
         private System.Windows.Forms.Label lblSessionName;
         private System.Windows.Forms.Button btnAddNowDate2;
         private System.Windows.Forms.Button btnAddNowDate1;
+        private System.Windows.Forms.Button btnExportDB;
     }
 }
